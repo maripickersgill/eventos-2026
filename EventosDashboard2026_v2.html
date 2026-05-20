@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Eventos 2026 — Spun Mídia</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:#0C0C0E;color:#e8e8e8;min-height:100vh}
+select,input,button{font-family:inherit}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:#111}
+::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+
+/* ── HEADER ── */
+.header{background:linear-gradient(135deg,#100F0F,#141420);border-bottom:1px solid #222;padding:14px 22px 12px}
+.logo-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#57DF7F,#3A6BF5);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#000}
+.logo-title{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.logo-sub{font-size:9px;color:#57DF7F;font-weight:600;letter-spacing:.15em;text-transform:uppercase}
+.stats-bar{display:flex;gap:8px;flex-wrap:wrap}
+.stat{background:rgba(255,255,255,.04);border:1px solid #222;border-radius:10px;padding:6px 12px;display:flex;flex-direction:column;gap:1px;cursor:default}
+.stat-num{font-size:17px;font-weight:800;color:#57DF7F}
+.stat-lbl{font-size:8px;color:#888;text-transform:uppercase;letter-spacing:.1em}
+
+/* ── TABS ── */
+.tabs{background:#0d0d10;border-bottom:1px solid #1e1e1e;display:flex;gap:0;padding:0 22px}
+.tab{padding:11px 18px;font-size:12px;font-weight:600;color:#666;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.tab.active{color:#57DF7F;border-bottom-color:#57DF7F}
+.tab:hover:not(.active){color:#aaa}
+
+/* ── FILTER BAR ── */
+.filter-bar{background:#111115;border-bottom:1px solid #1e1e1e;padding:10px 22px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg label{font-size:8px;color:#666;text-transform:uppercase;letter-spacing:.1em}
+.fg input,.fg select{background:#1a1a20;border:1px solid #2e2e38;border-radius:7px;color:#e8e8e8;padding:6px 9px;font-size:11px;outline:none}
+.fg input:focus,.fg select:focus{border-color:#57DF7F55}
+.view-btns{margin-left:auto;display:flex;gap:5px;align-items:center}
+.vbtn{background:transparent;border:1px solid #2e2e38;color:#888;border-radius:7px;padding:5px 11px;font-size:11px;cursor:pointer;font-weight:600;transition:all .15s}
+.vbtn.active{background:#57DF7F22;border-color:#57DF7F;color:#57DF7F}
+.vbtn.clear{color:#f87171;border-color:#f8717155}
+.toggle-future{display:flex;align-items:center;gap:6px;background:#1a1a20;border:1px solid #2e2e38;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:11px;color:#aaa;font-weight:600;white-space:nowrap}
+.toggle-future.on{border-color:#57DF7F;color:#57DF7F;background:#57DF7F11}
+.pill{width:10px;height:10px;border-radius:50%;border:2px solid currentColor;transition:background .15s}
+.pill.filled{background:currentColor}
+
+/* ── CARDS ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(278px,1fr));gap:11px;padding:16px 22px}
+.card{background:#14141a;border:1px solid #222;border-radius:13px;padding:13px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.card:hover{background:#1a1a24;border-color:#333;transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.4)}
+.card.past{opacity:.55}
+.card.planned{border-color:#57DF7F55;background:#0f1a10}
+.card-accent{position:absolute;top:0;left:0;right:0;height:3px}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;gap:4px;flex-wrap:wrap}
+.badges{display:flex;gap:4px;flex-wrap:wrap}
+.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;letter-spacing:.03em;white-space:nowrap}
+.card-title{font-weight:800;font-size:13px;color:#fff;margin-bottom:3px;line-height:1.3}
+.card-local{font-size:10px;color:#888;margin-bottom:7px}
+.card-desc{font-size:10px;color:#777;line-height:1.5;margin-bottom:9px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-bottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #1e1e1e;padding-top:7px}
+.card-valor{font-size:12px;font-weight:700}
+.card-total{font-size:9px;color:#555;margin-top:1px}
+.avatars{display:flex}
+.av{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;border:2px solid #14141a;margin-left:-5px}
+.plan-btn{background:#57DF7F22;border:1px solid #57DF7F55;border-radius:6px;color:#57DF7F;font-size:9px;font-weight:700;padding:3px 7px;cursor:pointer;white-space:nowrap}
+.plan-btn.added{background:#57DF7F;color:#000}
+
+/* ── LISTA ── */
+.lista-wrap{padding:12px 22px}
+.lista-head{display:grid;grid-template-columns:80px 1fr 70px 75px 145px 105px 90px;gap:6px;align-items:center;background:#111115;border-radius:8px 8px 0 0;padding:7px 12px}
+.lista-head span{font-size:8px;color:#666;font-weight:700;text-transform:uppercase}
+.lrow{display:grid;grid-template-columns:80px 1fr 70px 75px 145px 105px 90px;gap:6px;align-items:center;background:#0f0f14;padding:8px 12px;border-bottom:1px solid #1a1a1a;cursor:pointer;transition:background .1s}
+.lrow:hover{background:#14141a}
+.lrow.past{opacity:.5}
+.lrow.planned{background:#0f1a10;border-left:2px solid #57DF7F}
+
+/* ── CALENDÁRIO ── */
+.cal-wrap{padding:16px 22px}
+.cal-nav{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.cal-nav button{background:#1a1a20;border:1px solid #2e2e38;border-radius:7px;color:#aaa;padding:5px 12px;cursor:pointer;font-size:12px}
+.cal-nav button:hover{border-color:#57DF7F;color:#57DF7F}
+.cal-title{font-size:18px;font-weight:800;color:#fff}
+.cal-months{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:700px){.cal-months{grid-template-columns:1fr}}
+.cal-month{background:#14141a;border:1px solid #222;border-radius:12px;overflow:hidden}
+.cal-month-header{background:#1a1a24;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.cal-month-name{font-size:13px;font-weight:800;color:#fff}
+.cal-month-count{font-size:10px;color:#57DF7F;font-weight:700}
+.cal-events{padding:8px}
+.cal-ev{display:flex;align-items:flex-start;gap:8px;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background .1s;margin-bottom:4px}
+.cal-ev:hover{background:#1e1e28}
+.cal-ev.past{opacity:.45}
+.cal-ev.planned{background:#0f1a1055}
+.cal-ev-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.cal-ev-info{flex:1;min-width:0}
+.cal-ev-name{font-size:11px;font-weight:700;color:#e8e8e8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-ev-sub{font-size:9px;color:#777;margin-top:1px}
+.cal-ev-val{font-size:9px;font-weight:700;color:#57DF7F;white-space:nowrap}
+.cal-ev-past-tag{font-size:8px;color:#f87171;font-weight:700}
+.cal-empty{font-size:11px;color:#444;padding:12px 8px;font-style:italic}
+
+/* ── PLANEJAMENTO ── */
+.plan-wrap{padding:16px 22px;display:grid;grid-template-columns:1fr 320px;gap:16px}
+@media(max-width:800px){.plan-wrap{grid-template-columns:1fr}}
+.plan-list{display:flex;flex-direction:column;gap:0}
+.plan-section-title{font-size:11px;font-weight:700;color:#57DF7F;text-transform:uppercase;letter-spacing:.1em;padding:10px 0 6px;border-bottom:1px solid #1e1e1e;margin-bottom:8px}
+.plan-empty{font-size:12px;color:#555;font-style:italic;padding:20px 0;text-align:center}
+.plan-item{background:#14141a;border:1px solid #222;border-radius:10px;padding:12px;margin-bottom:8px;position:relative}
+.plan-item.past{opacity:.5}
+.plan-item-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.plan-item-name{font-size:13px;font-weight:800;color:#fff}
+.plan-item-mes{font-size:10px;color:#888;margin-top:2px}
+.plan-remove{background:transparent;border:none;color:#555;cursor:pointer;font-size:14px;padding:0 2px}
+.plan-remove:hover{color:#f87171}
+.plan-item-pessoas{margin-bottom:8px}
+.plan-item-label{font-size:9px;color:#666;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}
+.pessoas-grid{display:flex;flex-wrap:wrap;gap:4px}
+.pessoa-toggle{background:#1a1a20;border:1px solid #2e2e38;border-radius:16px;padding:3px 9px;font-size:10px;font-weight:600;color:#888;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .12s}
+.pessoa-toggle.on{border-color:#57DF7F;color:#57DF7F;background:#57DF7F15}
+.plan-item-custo{display:flex;justify-content:space-between;align-items:center;background:#0f0f14;border-radius:7px;padding:7px 10px}
+.plan-custo-lbl{font-size:9px;color:#666}
+.plan-custo-val{font-size:13px;font-weight:800;color:#57DF7F}
+.plan-custo-nd{font-size:11px;color:#555;font-style:italic}
+
+/* ── SIDEBAR ORÇAMENTO ── */
+.budget-sidebar{position:sticky;top:16px;align-self:flex-start}
+.budget-box{background:#14141a;border:1px solid #222;border-radius:12px;padding:16px;margin-bottom:12px}
+.budget-box-title{font-size:11px;font-weight:700;color:#57DF7F;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.budget-period{display:flex;gap:4px;margin-bottom:12px}
+.period-btn{flex:1;background:#1a1a20;border:1px solid #2e2e38;border-radius:6px;color:#888;font-size:10px;font-weight:600;padding:5px;cursor:pointer;text-align:center;transition:all .12s}
+.period-btn.active{background:#57DF7F22;border-color:#57DF7F;color:#57DF7F}
+.budget-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1e1e1e}
+.budget-row:last-child{border-bottom:none}
+.budget-row-lbl{font-size:11px;color:#888}
+.budget-row-val{font-size:12px;font-weight:700;color:#fff}
+.budget-total{background:linear-gradient(135deg,#57DF7F15,#3A6BF515);border:1px solid #57DF7F33;border-radius:8px;padding:10px;margin-top:8px;text-align:center}
+.budget-total-lbl{font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.budget-total-val{font-size:22px;font-weight:800;color:#57DF7F}
+.budget-nd{font-size:10px;color:#666;margin-top:4px}
+.budget-bar-wrap{margin-top:10px}
+.budget-bar-label{display:flex;justify-content:space-between;font-size:9px;color:#666;margin-bottom:4px}
+.budget-bar-track{height:6px;background:#1e1e1e;border-radius:3px;overflow:hidden}
+.budget-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.export-btn{width:100%;background:linear-gradient(135deg,#57DF7F,#3A6BF5);border:none;border-radius:8px;color:#000;font-weight:800;font-size:12px;padding:10px;cursor:pointer;margin-top:4px}
+.mes-breakdown{margin-top:6px}
+.mes-br-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:10px;border-bottom:1px solid #1a1a1a}
+.mes-br-row:last-child{border-bottom:none}
+.mes-br-name{color:#888}
+.mes-br-val{font-weight:700;color:#fff}
+
+/* ── TIME ── */
+.team-wrap{padding:16px 22px}
+.team-hint{font-size:11px;color:#666;margin-bottom:12px}
+.person-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}
+.ppill{background:#14141a;border:1px solid #2e2e38;border-radius:20px;padding:5px 11px;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:11px;color:#aaa;font-weight:600}
+.ppill.sel{background:#57DF7F22;border-color:#57DF7F;color:#57DF7F}
+.ppill-sub{font-size:8px;opacity:.7}
+.mcard{background:#14141a;border:1px solid #222;border-radius:11px;padding:13px;margin-bottom:10px}
+.mhead{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.mav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff}
+.mevents{display:flex;flex-wrap:wrap;gap:7px}
+.minicard{background:#0f0f14;border-radius:9px;padding:7px 11px;cursor:pointer;min-width:140px;flex:0 0 auto;transition:background .15s;border:1px solid #222}
+.minicard:hover{background:#1a1a24}
+.minicard.past{opacity:.45}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.modal-box{background:#15151e;border:1px solid #2a2a3a;border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:22px}
+.modal-accent{height:4px;border-radius:4px;margin-bottom:16px}
+.modal-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.modal-close{background:transparent;border:none;color:#666;font-size:17px;cursor:pointer}
+.modal-title{font-size:18px;font-weight:800;color:#fff;margin-bottom:10px;line-height:1.2}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
+.mcell{background:#0f0f14;border-radius:7px;padding:8px 11px}
+.mcell-lbl{font-size:8px;color:#666;margin-bottom:2px}
+.mcell-val{font-size:11px;color:#ddd;font-weight:600}
+.msec{background:#0f0f14;border-radius:7px;padding:9px 11px;margin-bottom:9px}
+.msec-lbl{font-size:8px;color:#666;margin-bottom:5px}
+.mlink{display:block;text-align:center;background:linear-gradient(135deg,#57DF7F,#3A6BF5);color:#000;font-weight:700;font-size:12px;padding:10px;border-radius:9px;text-decoration:none;margin-top:2px}
+.mperson{display:flex;align-items:center;gap:5px;background:#1a1a24;border-radius:16px;padding:3px 9px;margin:2px}
+.empty{text-align:center;color:#555;padding:50px;font-size:13px}
+.past-tag{background:#f8717122;border:1px solid #f8717144;border-radius:4px;color:#f87171;font-size:8px;font-weight:700;padding:1px 5px}
+.future-tag{background:#57DF7F22;border:1px solid #57DF7F44;border-radius:4px;color:#57DF7F;font-size:8px;font-weight:700;padding:1px 5px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const TODAY = new Date(2026,4,20); // 20 maio 2026
+
+const MES_NUM = {Março:3,Abril:4,Maio:5,Junho:6,Julho:7,Agosto:8,Setembro:9,Outubro:10,Novembro:11,Dezembro:12,"A definir":99};
+
+const TEAM=[
+  {nome:"Anna",    cargo:"Marketing",        cidade:"Campinas",       estado:"São Paulo",        r:"Sudeste"},
+  {nome:"Andrews", cargo:"Growth",           cidade:"Manaus",         estado:"Amazonas",         r:"Norte"},
+  {nome:"Luiza",   cargo:"—",               cidade:"—",              estado:"—",                r:"—"},
+  {nome:"Camile",  cargo:"—",               cidade:"Gravataí",       estado:"Rio Grande do Sul", r:"Sul"},
+  {nome:"Julia",   cargo:"—",               cidade:"Belo Horizonte", estado:"Minas Gerais",      r:"Sudeste"},
+  {nome:"Victória",cargo:"—",               cidade:"São Paulo",      estado:"São Paulo",         r:"Sudeste"},
+  {nome:"Rayssa",  cargo:"—",               cidade:"—",              estado:"—",                 r:"—"},
+  {nome:"Mariana", cargo:"Marketing Manager",cidade:"Amsterdam",     estado:"Países Baixos",     r:"Internacional"},
+  {nome:"Igor",    cargo:"—",               cidade:"São Paulo",      estado:"São Paulo",         r:"Sudeste"},
+];
+
+const CAT_META={
+  "Marketing & Comunicação":     {c:"#3A6BF5",bg:"#0d1a3a",e:"📣"},
+  "Games & Cultura Pop":         {c:"#E05C2A",bg:"#3a1208",e:"🎮"},
+  "SEO & Conteúdo":              {c:"#0B8043",bg:"#0b2e1a",e:"✍️"},
+  "Social & Influência":         {c:"#D93025",bg:"#4a0f0b",e:"📱"},
+  "E-commerce & Varejo":         {c:"#F9A825",bg:"#3a2500",e:"🛒"},
+  "Tech & Inovação":             {c:"#9B59B6",bg:"#2d1045",e:"⚡"},
+  "Negócios & Empreendedorismo": {c:"#00ACC1",bg:"#003040",e:"💼"},
+  "RH & Gestão":                 {c:"#7CB342",bg:"#1e2e0a",e:"👥"},
+  "iGaming & Betting":           {c:"#7E57C2",bg:"#1e0a40",e:"🎲"},
+};
+const MARCA_META={
+  "Spun":{c:"#3A6BF5",bg:"#0d1a3a"},
+  "Ezor":{c:"#E05C2A",bg:"#3a1208"},
+  "—":{c:"#888",bg:"#222"},
+};
+const MESES_ORDER=["Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro","A definir"];
+const CATS=["Todas",...Object.keys(CAT_META)];
+
+const E=[
+  {id:1,mes:"Março",n:3,evento:"CMO Summit",local:"Expo Center Norte (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Marketing & Comunicação",marca:"Spun",escopo:"Brasil",vm:987,vd:"R$ 987",site:"https://cmosummit.com.br/",desc:"Imersão com os maiores profissionais de marketing em um só lugar."},
+  {id:2,mes:"Março",n:3,evento:"South Summit Brazil",local:"Cais Mauá, Porto Alegre",estado:"Rio Grande do Sul",regiao:"Sul",cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://www.southsummit.io/pt",desc:"Ponto de conexões entre investidores, empresas e startups."},
+  {id:3,mes:"Março",n:3,evento:"Tijuca Geek Festival",local:"Rio de Janeiro",estado:"Rio de Janeiro",regiao:"Sudeste",cat:"Games & Cultura Pop",marca:"Ezor",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://tijucageekfestival.com.br/",desc:"Anime, manga, cosplay, K-Pop, RPG e cultura japonesa."},
+  {id:4,mes:"Março",n:3,evento:"Geek Day",local:"Londrina (PR)",estado:"Paraná",regiao:"Sul",cat:"Games & Cultura Pop",marca:"Ezor",escopo:"Brasil",vm:null,vd:"A divulgar",site:"",desc:"Evento de cultura gamer, cosplay, kpop, anime."},
+  {id:5,mes:"Março",n:3,evento:"Video Game Hall",local:"Rio de Janeiro",estado:"Rio de Janeiro",regiao:"Sudeste",cat:"Games & Cultura Pop",marca:"Ezor",escopo:"Brasil",vm:null,vd:"A divulgar",site:"",desc:"Maior celebração gamer do Rio."},
+  {id:6,mes:"Abril",n:4,evento:"VTEX Day",local:"São Paulo Expo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"E-commerce & Varejo",marca:"Spun",escopo:"Brasil",vm:2000,vd:"R$ 2.000",site:"https://vtexday.vtex.com/",desc:"O maior evento de digital commerce do mundo."},
+  {id:7,mes:"Abril",n:4,evento:"BiS SiGMA South America",local:"São Paulo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"iGaming & Betting",marca:"Ezor",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://sigma.world/pt-br/",desc:"Ecossistema de iGaming, apostas esportivas e afiliados."},
+  {id:8,mes:"Maio",n:5,evento:"Gramado Summit",local:"Gramado Serra Park (RS)",estado:"Rio Grande do Sul",regiao:"Sul",cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",vm:1890,vd:"R$ 1.890",site:"https://www.gramadosummit.com/",desc:"Palestrantes de topo sobre empreendedorismo, inovação e marketing."},
+  {id:9,mes:"Maio",n:5,evento:"MMA Impact",local:"São Paulo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Marketing & Comunicação",marca:"Spun",escopo:"Brasil",vm:999,vd:"R$ 999–3.699",site:"https://mmaglobal.com/impactbrasil2026",desc:"Criatividade, tecnologia e comportamento moldando marcas e negócios."},
+  {id:10,mes:"Maio",n:5,evento:"Proxxima Meio&Mensagem",local:"WTC (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Marketing & Comunicação",marca:"Spun",escopo:"Brasil",vm:1950,vd:"R$ 1.950",site:"https://evento.proxxima.com.br/",desc:"Líderes de marcas, agências e adtechs no futuro do marketing."},
+  {id:11,mes:"Maio",n:5,evento:"RIO2C",local:"Cidade das Artes, RJ",estado:"Rio de Janeiro",regiao:"Sudeste",cat:"Marketing & Comunicação",marca:"Spun",escopo:"Brasil",vm:1300,vd:"R$ 1.300–3.700",site:"https://www.rio2c.com/",desc:"Maior encontro de criatividade e economia criativa da AL."},
+  {id:12,mes:"Maio",n:5,evento:"Conexão Social Media",local:"São Paulo Expo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Social & Influência",marca:"Spun",escopo:"Brasil",vm:947,vd:"R$ 947",site:"https://www.conexaosocialmedia.com/",desc:"Um dos maiores eventos brasileiros focados em redes sociais."},
+  {id:13,mes:"Maio",n:5,evento:"Afiliados Brazil",local:"Frei Caneca (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"E-commerce & Varejo",marca:"Spun",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://afiliadosbrasil.com.br/",desc:"Maior evento de afiliados do mundo."},
+  {id:14,mes:"Maio",n:5,evento:"GamesCon Latam",local:"São Paulo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Games & Cultura Pop",marca:"Ezor",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://latam.gamescom.global/",desc:"Uma das maiores feiras de games da América Latina."},
+  {id:15,mes:"Maio",n:5,evento:"Brasilia Game Festival",local:"Brasília",estado:"Brasília",regiao:"Centro-Oeste",cat:"Games & Cultura Pop",marca:"Ezor",escopo:"Brasil",vm:null,vd:"A divulgar",site:"",desc:"Festival gamer com competições, stands e cultura pop."},
+  {id:16,mes:"Junho",n:6,evento:"Digimarcon Brazil",local:"Intercontinental SP",estado:"São Paulo",regiao:"Sudeste",cat:"Marketing & Comunicação",marca:"Spun",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://digimarconbrazil.com.br/",desc:"Premier Digital Marketing Conference do Brasil."},
+  {id:17,mes:"Junho",n:6,evento:"Varejo TechDay",local:"Centro ACATE (SC)",estado:"Santa Catarina",regiao:"Sul",cat:"E-commerce & Varejo",marca:"Spun",escopo:"Brasil",vm:439,vd:"R$ 439",site:"https://www.acate.com.br/",desc:"Maior evento de tecnologia para o varejo do sul do Brasil."},
+  {id:18,mes:"Junho",n:6,evento:"Influent Summit",local:"Expo Center Norte (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Social & Influência",marca:"Spun",escopo:"Brasil",vm:1497,vd:"R$ 1.497",site:"https://www.influentsummit.com.br/",desc:"Marcas, plataformas, creators e líderes do mercado de influência."},
+  {id:19,mes:"Junho",n:6,evento:"Web Summit Rio",local:"Rio de Janeiro",estado:"Rio de Janeiro",regiao:"Sudeste",cat:"Tech & Inovação",marca:"Spun",escopo:"Brasil",vm:595,vd:"R$ 595–7.495",site:"https://rio.websummit.com/pt-br/",desc:"Versão brasileira do maior evento de tecnologia da Europa."},
+  {id:20,mes:"Junho",n:6,evento:"GAT Brazil",local:"Distrito Anhembi (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"iGaming & Betting",marca:"Ezor",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://www.gatevents.net/",desc:"Líderes de jogos online, apostas esportivas e eSports."},
+  {id:21,mes:"Julho",n:7,evento:"O novo mercado",local:"Vibra (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",vm:2197,vd:"R$ 2.197",site:"https://onovomercado.com/",desc:"4.000 pessoas reunidas para crescer no mercado digital."},
+  {id:22,mes:"Julho",n:7,evento:"Expo Empreendedor",local:"Expo Center Norte (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",vm:1597,vd:"R$ 1.597",site:"https://expoempreendedor.com.br/",desc:"O evento de negócios que mais cresce no Brasil."},
+  {id:23,mes:"Julho",n:7,evento:"E-commerce Brasil Forum",local:"Distrito Anhembi (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"E-commerce & Varejo",marca:"Spun",escopo:"Brasil",vm:2397,vd:"R$ 2.397",site:"https://eventos.ecommercebrasil.com.br/",desc:"3 dias de conteúdo de alta qualidade e networking estratégico."},
+  {id:24,mes:"Julho",n:7,evento:"Anime Friends",local:"São Paulo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Games & Cultura Pop",marca:"Ezor",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://animefriends.com.br/",desc:"Maior evento de cultura pop, anime e games do Brasil."},
+  {id:25,mes:"Agosto",n:8,evento:"Rio Innovation Week",local:"Pier Mauá (RJ)",estado:"Rio de Janeiro",regiao:"Sudeste",cat:"Tech & Inovação",marca:"Spun",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://rioinnovationweek.com.br/",desc:"Maior conferência de negócios, creator economy e inovação."},
+  {id:26,mes:"Agosto",n:8,evento:"Brand100",local:"Costão do Santinho (SC)",estado:"Santa Catarina",regiao:"Sul",cat:"Marketing & Comunicação",marca:"Spun",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://brand100events.com/brasil/",desc:"Veículos, agências e anunciantes discutindo propostas exclusivas."},
+  {id:27,mes:"Agosto",n:8,evento:"Varejo Experience",local:"Foz do Iguaçu (PR)",estado:"Paraná",regiao:"Sul",cat:"E-commerce & Varejo",marca:"Spun",escopo:"Brasil",vm:1999,vd:"R$ 1.999",site:"https://varejoexperience.com.br/",desc:"Maiores nomes e marcas do Brasil com networking de alto nível."},
+  {id:28,mes:"Agosto",n:8,evento:"Startup Summit",local:"Centrosul (SC)",estado:"Santa Catarina",regiao:"Sul",cat:"Tech & Inovação",marca:"Spun",escopo:"Brasil",vm:1499,vd:"R$ 1.499",site:"https://www.startupsummit.com.br/",desc:"200 palestrantes, 10.000 pessoas. Startups e investidores."},
+  {id:29,mes:"Agosto",n:8,evento:"Brazil Promotion",local:"Distrito Anhembi (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Marketing & Comunicação",marca:"Spun",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://www.brazilpromotion.com.br/",desc:"22ª edição. Principal feira de marketing e negócios corporativos."},
+  {id:30,mes:"Agosto",n:8,evento:"Conarh",local:"São Paulo Expo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"RH & Gestão",marca:"Spun",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://conarh.org.br/",desc:"Maior evento de RH e gestão de pessoas do mundo."},
+  {id:31,mes:"Agosto",n:8,evento:"G&M Events Brazil",local:"São Paulo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Games & Cultura Pop",marca:"Ezor",escopo:"Brasil",vm:null,vd:"A divulgar",site:"",desc:"Ponto de encontro para a indústria de jogos no Brasil."},
+  {id:32,mes:"Setembro",n:9,evento:"Conarec",local:"Transamérica Expo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Marketing & Comunicação",marca:"Spun",escopo:"Brasil",vm:3180,vd:"R$ 3.180",site:"https://conarec.com.br/",desc:"Maior evento dedicado à experiência do cliente no mundo."},
+  {id:33,mes:"Setembro",n:9,evento:"Latam Retail Show",local:"Expo Center Norte (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"E-commerce & Varejo",marca:"Spun",escopo:"Brasil",vm:3400,vd:"R$ 3.400",site:"https://latamretailshow.com.br",desc:"O mais relevante evento de varejo da América Latina."},
+  {id:34,mes:"Setembro",n:9,evento:"HJ Conference",local:"Concórdia (SC)",estado:"Santa Catarina",regiao:"Sul",cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",vm:2699,vd:"R$ 2.699",site:"https://hjconference.com.br/",desc:"Conferência de conteúdo e conexões que transforma o empreendedor."},
+  {id:35,mes:"Setembro",n:9,evento:"YOUpix Summit",local:"Transamérica Expo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Social & Influência",marca:"Spun",escopo:"Brasil",vm:593,vd:"R$ 593",site:"https://www.youpix.com.br/",desc:"Principal evento de creator economy da América Latina."},
+  {id:36,mes:"Setembro",n:9,evento:"D2C Summit",local:"Distrito Anhembi (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"E-commerce & Varejo",marca:"Spun",escopo:"Brasil",vm:899,vd:"R$ 899",site:"https://d2csummit.com.br/",desc:"Relação direta com o cliente, sem intermediários."},
+  {id:37,mes:"Setembro",n:9,evento:"Digitalks Expo",local:"A divulgar",estado:"A definir",regiao:"A definir",cat:"Tech & Inovação",marca:"Spun",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://digitalks.com.br/expo",desc:"Trilhas de FinTech, AI, Venture Capital e Smart Cities."},
+  {id:38,mes:"Setembro",n:9,evento:"Mercado Livre Experience",local:"Transamérica Expo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"E-commerce & Varejo",marca:"Spun",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://mercadolivreexperience.com.br/",desc:"Fortalecimento do ecossistema de vendas online do Mercado Livre."},
+  {id:39,mes:"Outubro",n:10,evento:"Universo TOTVS",local:"Expo Center Norte (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Tech & Inovação",marca:"Spun",escopo:"Brasil",vm:1600,vd:"R$ 1.600",site:"https://eventos.totvs.com/",desc:"Gestão empresarial, tecnologia e inovação com a TOTVS."},
+  {id:40,mes:"Outubro",n:10,evento:"Brasil Games Show (BGS)",local:"Distrito Anhembi (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Games & Cultura Pop",marca:"Ezor",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://www.brasilgameshow.com.br/",desc:"Maior feira de games da América Latina e uma das maiores do mundo."},
+  {id:41,mes:"Novembro",n:11,evento:"SEO Summit",local:"São Paulo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"SEO & Conteúdo",marca:"Spun",escopo:"Brasil",vm:null,vd:"A divulgar",site:"https://www.seosummit.com.br/",desc:"Maior evento de SEO, Conteúdo e Marketing Orgânico do Brasil."},
+  {id:42,mes:"Dezembro",n:12,evento:"Product Camp",local:"Frei Caneca (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Tech & Inovação",marca:"Spun",escopo:"Brasil",vm:null,vd:"A divulgar",site:"",desc:"Evento de produto e inovação."},
+  {id:43,mes:"Dezembro",n:12,evento:"CCXP",local:"São Paulo Expo (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Games & Cultura Pop",marca:"Ezor",escopo:"Brasil",vm:null,vd:"A divulgar",site:"",desc:"Maior festival de cultura pop do mundo."},
+  {id:44,mes:"A definir",n:99,evento:"Growth Experience",local:"Chapecó (SC)",estado:"Santa Catarina",regiao:"Sul",cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",vm:1197,vd:"R$ 1.197",site:"",desc:"Crescimento e estratégia de negócios."},
+  {id:45,mes:"A definir",n:99,evento:"MXMA Maximidia",local:"Hotel Unique (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Marketing & Comunicação",marca:"Spun",escopo:"Brasil",vm:3570,vd:"R$ 3.570",site:"",desc:"Meio e Mensagem. Alto nível de marketing e comunicação."},
+  {id:46,mes:"A definir",n:99,evento:"Analytics Summit",local:"Vila Olímpia (SP)",estado:"São Paulo",regiao:"Sudeste",cat:"Tech & Inovação",marca:"Spun",escopo:"Brasil",vm:1694,vd:"R$ 1.694",site:"",desc:"Dados, analytics e inteligência de negócios."},
+  {id:47,mes:"A definir",n:99,evento:"CRM Zummit",local:"Florianópolis (SC)",estado:"Santa Catarina",regiao:"Sul",cat:"Marketing & Comunicação",marca:"Spun",escopo:"Brasil",vm:585,vd:"R$ 585",site:"",desc:"CRM, fidelização e relacionamento com o cliente."},
+  {id:48,mes:"A definir",n:99,evento:"Growth Conference Brasil",local:"A divulgar",estado:"A definir",regiao:"A definir",cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",vm:849,vd:"R$ 849",site:"",desc:"Estratégias de crescimento acelerado."},
+  {id:49,mes:"Março",n:3,evento:"SXSW",local:"Austin, TX — EUA",estado:"EUA",regiao:"América do Norte",cat:"Marketing & Comunicação",marca:"—",escopo:"Internacional",vm:1800,vd:"$ 1.800+",site:"https://www.sxsw.com",desc:"O cruzamento global entre tecnologia, cultura e marketing."},
+  {id:50,mes:"Março",n:3,evento:"Adobe Summit",local:"Las Vegas, NV — EUA",estado:"EUA",regiao:"América do Norte",cat:"Tech & Inovação",marca:"—",escopo:"Internacional",vm:1500,vd:"$ 1.500+",site:"https://summit.adobe.com",desc:"IA, personalização e experiência digital em escala."},
+  {id:51,mes:"Abril",n:4,evento:"Possible Conference",local:"Miami Beach — EUA",estado:"EUA",regiao:"América do Norte",cat:"Marketing & Comunicação",marca:"—",escopo:"Internacional",vm:2500,vd:"$ 2.500+",site:"https://possibleevent.com",desc:"5.000+ executivos de marketing. Foco em marca e negócios."},
+  {id:52,mes:"Abril",n:4,evento:"IAB NewFronts",local:"Nova York — EUA",estado:"EUA",regiao:"América do Norte",cat:"Social & Influência",marca:"—",escopo:"Internacional",vm:0,vd:"Gratuito",site:"https://www.iab.com/events/newfronts",desc:"Maior marketplace digital de conteúdo do mundo."},
+  {id:53,mes:"Maio",n:5,evento:"OMR Festival",local:"Hamburgo — Alemanha",estado:"Alemanha",regiao:"Europa",cat:"Marketing & Comunicação",marca:"—",escopo:"Internacional",vm:270,vd:"€ 249+",site:"https://omr.com",desc:"67.000 visitantes, Tom Brady, Scott Galloway. Part festival, part conference."},
+  {id:54,mes:"Maio",n:5,evento:"DMWF Global",local:"Londres — Reino Unido",estado:"Reino Unido",regiao:"Europa",cat:"Social & Influência",marca:"—",escopo:"Internacional",vm:510,vd:"£ 449+",site:"https://digitalmarketingworldforum.com",desc:"Estratégia de conteúdo, social media e crescimento de marca global."},
+  {id:55,mes:"Junho",n:6,evento:"Cannes Lions",local:"Cannes — França",estado:"França",regiao:"Europa",cat:"Marketing & Comunicação",marca:"—",escopo:"Internacional",vm:3300,vd:"€ 3.000+",site:"https://www.canneslions.com",desc:"73ª edição. O festival mais prestigioso de criatividade do mundo. 15.000 delegados."},
+  {id:56,mes:"Junho",n:6,evento:"MAD//Fest",local:"Londres — Reino Unido",estado:"Reino Unido",regiao:"Europa",cat:"Marketing & Comunicação",marca:"—",escopo:"Internacional",vm:0,vd:"Convidados",site:"https://www.madfestlondon.com",desc:"Disneyland das marcas. 15.000+ convidados. Experiências imersivas."},
+  {id:57,mes:"Junho",n:6,evento:"Gartner Symposium",local:"Nova York — EUA",estado:"EUA",regiao:"América do Norte",cat:"Tech & Inovação",marca:"—",escopo:"Internacional",vm:4200,vd:"€ 3.850+",site:"https://www.gartner.com/en/conferences",desc:"Referência para CMOs. Pesquisa aplicada e futuro do cliente."},
+  {id:58,mes:"Setembro",n:9,evento:"DMEXCO",local:"Colônia — Alemanha",estado:"Alemanha",regiao:"Europa",cat:"Tech & Inovação",marca:"—",escopo:"Internacional",vm:110,vd:"€ 99+",site:"https://dmexco.com",desc:"Principal evento europeu de marketing digital e tech."},
+  {id:59,mes:"Setembro",n:9,evento:"Content Marketing World",local:"Boston — EUA",estado:"EUA",regiao:"América do Norte",cat:"SEO & Conteúdo",marca:"—",escopo:"Internacional",vm:1200,vd:"$ 1.200+",site:"https://www.contentmarketingworld.com",desc:"A conferência que criou o content marketing. IA e ROI."},
+  {id:60,mes:"Outubro",n:10,evento:"Advertising Week NY",local:"Nova York — EUA",estado:"EUA",regiao:"América do Norte",cat:"Marketing & Comunicação",marca:"—",escopo:"Internacional",vm:550,vd:"$ 500+",site:"https://advertisingweek.com",desc:"16.000 participantes. Tudo que move publicidade e comunicação."},
+  {id:61,mes:"Outubro",n:10,evento:"Social Media Mktg World",local:"San Diego — EUA",estado:"EUA",regiao:"América do Norte",cat:"Social & Influência",marca:"—",escopo:"Internacional",vm:1400,vd:"$ 1.400+",site:"https://www.socialmediaexaminer.com",desc:"100% pitch-free. 3.000 participantes de 50 países."},
+  {id:62,mes:"Novembro",n:11,evento:"Web Summit",local:"Lisboa — Portugal",estado:"Portugal",regiao:"Europa",cat:"Tech & Inovação",marca:"—",escopo:"Internacional",vm:545,vd:"€ 495+",site:"https://websummit.com",desc:"Um dos maiores eventos de tecnologia da Europa. Startups e líderes globais."},
+];
+
+function isPast(ev){return ev.n < TODAY.getMonth()+1;}
+function isFuture(ev){return ev.n > TODAY.getMonth()+1 || ev.n===99;}
+function isCurrentMonth(ev){return ev.n===TODAY.getMonth()+1;}
+function hsl(s){return `hsl(${(s.charCodeAt(0)*47)%360},48%,40%)`;}
+function prox(ev){return TEAM.filter(p=>ev.escopo==="Internacional"&&p.r==="Internacional"||ev.escopo==="Brasil"&&p.estado===ev.estado);}
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let S={
+  tab:"eventos", // eventos | calendario | planejamento | time
+  escopo:"Todos",cat:"Todas",reg:"Todas",marca:"Todas",mes:"Todos",
+  bpp:"",qtd:1,busca:"",
+  onlyFuture:false,
+  view:"cards",
+  modal:null,
+  teamSel:[],
+  // planejamento: {eventId: {pessoas:[nomes]}}
+  plan:{},
+  planPeriod:"anual", // mensal | semestral | anual
+  planMesFocus: TODAY.getMonth()+1,
+};
+
+const REGS_LIST=["Todas",...[...new Set(E.map(e=>e.regiao))].sort()];
+
+function set(k,v){S[k]=v;render();}
+function tog(k,v){S[k]=S[k].includes(v)?S[k].filter(x=>x!==v):[...S[k],v];render();}
+function clr(){S={...S,escopo:"Todos",cat:"Todas",reg:"Todas",marca:"Todas",mes:"Todos",bpp:"",qtd:1,busca:"",onlyFuture:false,teamSel:[]};render();}
+
+// plan
+function addPlan(id){if(!S.plan[id])S.plan[id]={pessoas:[]};render();}
+function removePlan(id){delete S.plan[id];render();}
+function togPlanPessoa(id,nome){
+  if(!S.plan[id])return;
+  const arr=S.plan[id].pessoas;
+  S.plan[id].pessoas=arr.includes(nome)?arr.filter(x=>x!==nome):[...arr,nome];
+  render();
+}
+
+function filtered(){
+  const budget=S.bpp?parseFloat(S.bpp)*S.qtd:null;
+  const bl=S.busca.toLowerCase();
+  return E.filter(ev=>{
+    if(S.onlyFuture&&!isFuture(ev)&&!isCurrentMonth(ev))return false;
+    if(S.escopo!=="Todos"&&ev.escopo!==S.escopo)return false;
+    if(S.cat!=="Todas"&&ev.cat!==S.cat)return false;
+    if(S.reg!=="Todas"&&ev.regiao!==S.reg)return false;
+    if(S.mes!=="Todos"&&ev.mes!==S.mes)return false;
+    if(S.marca==="Internacional"&&ev.escopo!=="Internacional")return false;
+    if(S.marca!=="Todas"&&S.marca!=="Internacional"&&ev.marca!==S.marca)return false;
+    if(budget&&ev.vm&&ev.vm*S.qtd>budget)return false;
+    if(bl&&!ev.evento.toLowerCase().includes(bl)&&!ev.desc.toLowerCase().includes(bl))return false;
+    return true;
+  }).sort((a,b)=>a.n-b.n||a.evento.localeCompare(b.evento));
+}
+
+// budget calc
+function planCusto(id){
+  const ev=E.find(e=>e.id===id);
+  if(!ev||!ev.vm)return null;
+  const qtd=S.plan[id]?.pessoas?.length||0;
+  return qtd===0?null:ev.vm*qtd;
+}
+function totalPlanCusto(period){
+  let total=0;let nd=0;
+  const mes=TODAY.getMonth()+1;
+  const evIds=Object.keys(S.plan).map(Number);
+  const evs=evIds.map(id=>E.find(e=>e.id===id)).filter(Boolean);
+  const filtered=evs.filter(ev=>{
+    if(period==="mensal")return ev.n===S.planMesFocus;
+    if(period==="semestral"){const half=mes<=6?[1,2,3,4,5,6]:[7,8,9,10,11,12];return half.includes(ev.n);}
+    return true;
+  });
+  filtered.forEach(ev=>{
+    const c=planCusto(ev.id);
+    if(c!==null)total+=c;
+    else nd++;
+  });
+  return{total,nd,evs:filtered};
+}
+
+function bdg(t,c,bg,big){
+  const p=big?"3px 9px":"2px 6px",fs=big?11:9;
+  return `<span class="badge" style="background:${bg};color:${c};font-size:${fs}px;padding:${p}">${t}</span>`;
+}
+
+function fmtBRL(v){return v.toLocaleString("pt-BR",{minimumFractionDigits:0,maximumFractionDigits:0});}
+
+// ── RENDERS ───────────────────────────────────────────────────────────────────
+function renderHeader(fl){
+  const cv=fl.filter(e=>e.vm!==null&&e.vm>0);
+  const med=cv.length?Math.round(cv.reduce((s,e)=>s+e.vm,0)/cv.length):0;
+  const tbgt=S.bpp&&S.qtd?parseFloat(S.bpp)*S.qtd:null;
+  const planCount=Object.keys(S.plan).length;
+  return `<div class="header">
+    <div class="logo-row">
+      <div class="logo-icon">S</div>
+      <div><div class="logo-title">Eventos 2026</div><div class="logo-sub">Spun Mídia · Ezor · Internacional</div></div>
+    </div>
+    <div class="stats-bar">
+      <div class="stat"><span class="stat-num">${fl.length}</span><span class="stat-lbl">filtrados</span></div>
+      <div class="stat"><span class="stat-num">${E.length}</span><span class="stat-lbl">total</span></div>
+      <div class="stat"><span class="stat-num">${fl.filter(e=>isFuture(e)||isCurrentMonth(e)).length}</span><span class="stat-lbl">futuros</span></div>
+      <div class="stat"><span class="stat-num">${med?`R$${fmtBRL(med)}`:"—"}</span><span class="stat-lbl">ticket médio</span></div>
+      <div class="stat" style="${planCount?'border-color:#57DF7F44':''}" onclick="set('tab','planejamento')" style="cursor:pointer">
+        <span class="stat-num" style="${planCount?'color:#57DF7F':''}">${planCount}</span><span class="stat-lbl">planejados</span>
+      </div>
+      ${tbgt?`<div class="stat" style="border-color:#57DF7F44"><span class="stat-num" style="font-size:14px">R$${fmtBRL(tbgt)}</span><span class="stat-lbl">budget(${S.qtd}×)</span></div>`:""}
+    </div>
+  </div>`;
+}
+
+function renderTabs(){
+  const tabs=[["eventos","📅 Eventos"],["calendario","🗓 Calendário"],["planejamento","💰 Planejamento"],["time","👥 Time"]];
+  return `<div class="tabs">${tabs.map(([k,l])=>`<div class="tab${S.tab===k?" active":""}" onclick="set('tab','${k}')">${l}</div>`).join("")}</div>`;
+}
+
+function renderFilterBar(fl){
+  const opts=(arr,cur)=>arr.map(v=>`<option${v===cur?" selected":""}>${v}</option>`).join("");
+  const showFilters=S.tab!=="planejamento"&&S.tab!=="time";
+  if(!showFilters)return "";
+  return `<div class="filter-bar">
+    <div class="fg"><label>Buscar</label><input style="width:140px" placeholder="nome ou desc..." value="${S.busca}" oninput="set('busca',this.value)"></div>
+    <div class="fg"><label>Escopo</label><select onchange="set('escopo',this.value)">${opts(["Todos","Brasil","Internacional"],S.escopo)}</select></div>
+    <div class="fg"><label>Categoria</label><select onchange="set('cat',this.value)">${opts(CATS,S.cat)}</select></div>
+    <div class="fg"><label>Região</label><select onchange="set('reg',this.value)">${opts(REGS_LIST,S.reg)}</select></div>
+    <div class="fg"><label>Marca</label><select onchange="set('marca',this.value)">${opts(["Todas","Spun","Ezor","Internacional"],S.marca)}</select></div>
+    <div class="fg"><label>Mês</label><select onchange="set('mes',this.value)">${opts(["Todos",...MESES_ORDER],S.mes)}</select></div>
+    <div class="fg"><label>Budget/pessoa</label><input style="width:100px" type="number" placeholder="ex: 2000" value="${S.bpp}" oninput="set('bpp',this.value)"></div>
+    <div class="fg"><label>Nº pessoas</label><input style="width:60px" type="number" min="1" max="9" value="${S.qtd}" oninput="set('qtd',parseInt(this.value)||1)"></div>
+    <button class="toggle-future${S.onlyFuture?" on":""}" onclick="set('onlyFuture',${!S.onlyFuture})">
+      <div class="pill${S.onlyFuture?" filled":""}"></div>Só futuros
+    </button>
+    <div class="view-btns">
+      ${S.tab==="eventos"?`
+        <button class="vbtn${S.view==="cards"?" active":""}" onclick="set('view','cards')">⬜ Cards</button>
+        <button class="vbtn${S.view==="lista"?" active":""}" onclick="set('view','lista')">≡ Lista</button>
+      `:""}
+      <button class="vbtn clear" onclick="clr()">✕ Limpar</button>
+    </div>
+  </div>`;
+}
+
+function renderEventos(fl){
+  if(S.view==="lista"){
+    if(!fl.length)return `<div class="empty">Nenhum evento encontrado.</div>`;
+    return `<div class="lista-wrap">
+      <div class="lista-head"><span>MÊS</span><span>EVENTO</span><span>MARCA</span><span>ESCOPO</span><span>CATEGORIA</span><span>VALOR</span><span>AÇÃO</span></div>
+      ${fl.map(ev=>{
+        const cm=CAT_META[ev.cat]||{};const mm=MARCA_META[ev.marca]||{};
+        const past=isPast(ev);const planned=!!S.plan[ev.id];
+        return `<div class="lrow${past?" past":""}${planned?" planned":""}" onclick="set('modal',${ev.id})">
+          <span style="font-size:10px;color:#888">${ev.mes}${past?` <span class="past-tag">passado</span>`:isCurrentMonth(ev)?` <span class="future-tag">agora</span>`:""}</span>
+          <span style="font-size:12px;font-weight:700;color:#e8e8e8">${ev.evento}</span>
+          ${bdg(ev.marca,mm.c,mm.bg)}
+          ${bdg(ev.escopo==="Brasil"?"🇧🇷 BR":"🌍 Intl",ev.escopo==="Brasil"?"#0B8043":"#9B59B6","#1a2a1a")}
+          <span style="font-size:9px;color:${cm.c||"#aaa"}">${cm.e||""} ${ev.cat}</span>
+          <span style="font-size:11px;font-weight:700;color:${ev.vm!==null?'#57DF7F':'#555'}">${ev.vd}</span>
+          <button class="plan-btn${planned?" added":""}" onclick="event.stopPropagation();${planned?`removePlan(${ev.id})`:`addPlan(${ev.id})`}">${planned?"✓ Adicionado":"+ Planejar"}</button>
+        </div>`;
+      }).join("")}
+    </div>`;
+  }
+  // cards
+  if(!fl.length)return `<div class="empty">Nenhum evento encontrado com esses filtros.</div>`;
+  return `<div class="grid">${fl.map(ev=>{
+    const cm=CAT_META[ev.cat]||{};const mm=MARCA_META[ev.marca]||{};
+    const px=prox(ev);const tot=ev.vm&&S.qtd>1?ev.vm*S.qtd:null;
+    const past=isPast(ev);const planned=!!S.plan[ev.id];
+    return `<div class="card${past?" past":""}${planned?" planned":""}" onclick="set('modal',${ev.id})">
+      <div class="card-accent" style="background:linear-gradient(90deg,${cm.c||"#57DF7F"},transparent)"></div>
+      <div class="card-header">
+        <div class="badges">
+          ${bdg(ev.mes,"#999","#1e1e1e")}
+          ${past?`<span class="past-tag">passado</span>`:isCurrentMonth(ev)?`<span class="future-tag">este mês</span>`:""}
+          ${bdg(`${cm.e||""}${ev.cat}`,cm.c,cm.bg)}
+        </div>
+        ${bdg(ev.marca,mm.c,mm.bg)}
+      </div>
+      <div class="card-title">${ev.evento}</div>
+      <div class="card-local">📍 ${ev.local}</div>
+      <div class="card-desc">${ev.desc}</div>
+      <div class="card-bottom">
+        <div>
+          <div class="card-valor" style="color:${ev.vm!==null?'#57DF7F':'#666'}">${ev.vd}</div>
+          ${tot?`<div class="card-total">Total(${S.qtd}×): R$${fmtBRL(tot)}</div>`:""}
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          ${px.length?`<div class="avatars">${px.slice(0,3).map(p=>`<div class="av" title="${p.nome}" style="background:${hsl(p.nome)}">${p.nome[0]}</div>`).join("")}</div>`:""}
+          <button class="plan-btn${planned?" added":""}" onclick="event.stopPropagation();${planned?`removePlan(${ev.id})`:`addPlan(${ev.id})`}">${planned?"✓":"+"}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function renderCalendario(fl){
+  const mesActual=TODAY.getMonth()+1;
+  const mesesComEvento=[...new Set(fl.map(e=>e.mes))].sort((a,b)=>MES_NUM[a]-MES_NUM[b]);
+  if(!mesesComEvento.length)return `<div class="empty">Nenhum evento nos filtros atuais.</div>`;
+  return `<div class="cal-wrap">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <div style="font-size:16px;font-weight:800;color:#fff">Calendário 2026</div>
+      <div style="font-size:11px;color:#666">— clique em um evento para ver detalhes</div>
+    </div>
+    <div class="cal-months">
+      ${MESES_ORDER.filter(m=>{
+        const evs=fl.filter(e=>e.mes===m);
+        return evs.length>0;
+      }).map(mes=>{
+        const mesN=MES_NUM[mes];
+        const evs=fl.filter(e=>e.mes===mes).sort((a,b)=>a.evento.localeCompare(b.evento));
+        const past=mesN<mesActual;
+        const current=mesN===mesActual;
+        return `<div class="cal-month">
+          <div class="cal-month-header" style="${current?"background:#0f1a10;border-left:3px solid #57DF7F":""}">
+            <div>
+              <div class="cal-month-name">${mes} ${mesN===99?"":"2026"} ${current?'<span class="future-tag">agora</span>':past?'<span class="past-tag">passado</span>':""}</div>
+            </div>
+            <div class="cal-month-count">${evs.length} evento${evs.length!==1?"s":""}</div>
+          </div>
+          <div class="cal-events">
+            ${evs.length===0?`<div class="cal-empty">Sem eventos</div>`:evs.map(ev=>{
+              const cm=CAT_META[ev.cat]||{};const planned=!!S.plan[ev.id];
+              return `<div class="cal-ev${past?" past":""}${planned?" planned":""}" onclick="set('modal',${ev.id})">
+                <div class="cal-ev-dot" style="background:${cm.c||"#57DF7F"}"></div>
+                <div class="cal-ev-info">
+                  <div class="cal-ev-name">${ev.evento}</div>
+                  <div class="cal-ev-sub">${ev.local} · ${ev.escopo==="Internacional"?"🌍":"🇧🇷"} ${ev.marca!=="—"?ev.marca:""}</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+                  <div class="cal-ev-val">${ev.vm?ev.vd:""}</div>
+                  ${planned?`<span style="font-size:8px;color:#57DF7F;font-weight:700">✓ plan</span>`:`<button class="plan-btn" style="font-size:8px;padding:2px 5px" onclick="event.stopPropagation();addPlan(${ev.id})">+</button>`}
+                </div>
+              </div>`;
+            }).join("")}
+          </div>
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
+function renderPlanejamento(){
+  const ids=Object.keys(S.plan).map(Number);
+  const evs=ids.map(id=>E.find(e=>e.id===id)).filter(Boolean).sort((a,b)=>a.n-b.n);
+  const futEvs=evs.filter(ev=>isFuture(ev)||isCurrentMonth(ev));
+  const pastEvs=evs.filter(ev=>isPast(ev));
+
+  const {total,nd,evs:periodEvs}=totalPlanCusto(S.planPeriod);
+  const maxVal=Math.max(...evs.map(ev=>planCusto(ev.id)||0),1);
+
+  function itemHtml(ev){
+    const cm=CAT_META[ev.cat]||{};
+    const custo=planCusto(ev.id);
+    const past=isPast(ev);
+    return `<div class="plan-item${past?" past":""}">
+      <div class="plan-item-top">
+        <div>
+          <div class="plan-item-name">${ev.evento}</div>
+          <div class="plan-item-mes">${ev.mes} · ${ev.local}</div>
+          <div style="margin-top:4px">${bdg(`${cm.e||""}${ev.cat}`,cm.c,cm.bg)} ${bdg(ev.escopo==="Brasil"?"🇧🇷":"🌍",ev.escopo==="Brasil"?"#0B8043":"#9B59B6","#1a2a1a")}</div>
+        </div>
+        <button class="plan-remove" onclick="removePlan(${ev.id})" title="Remover">✕</button>
+      </div>
+      <div class="plan-item-pessoas">
+        <div class="plan-item-label">Quem vai participar</div>
+        <div class="pessoas-grid">
+          ${TEAM.map(p=>{
+            const on=S.plan[ev.id]?.pessoas?.includes(p.nome);
+            return `<button class="pessoa-toggle${on?" on":""}" onclick="togPlanPessoa(${ev.id},'${p.nome}')">
+              <div style="width:14px;height:14px;border-radius:50%;background:${hsl(p.nome)};display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff">${p.nome[0]}</div>
+              ${p.nome}
+            </button>`;
+          }).join("")}
+        </div>
+      </div>
+      <div class="plan-item-custo">
+        <div>
+          <div class="plan-custo-lbl">Custo estimado (${S.plan[ev.id]?.pessoas?.length||0} pessoa${S.plan[ev.id]?.pessoas?.length!==1?"s":""})</div>
+          ${ev.vm?`<div style="font-size:8px;color:#666">base: ${ev.vd}/pessoa</div>`:""}
+        </div>
+        ${custo!==null
+          ?`<div class="plan-custo-val">R$ ${fmtBRL(custo)}</div>`
+          :ev.vm===null
+            ?`<div class="plan-custo-nd">Valor a divulgar</div>`
+            :`<div class="plan-custo-nd">Selecione pessoas</div>`}
+      </div>
+      ${custo?`<div style="margin-top:8px">
+        <div style="height:4px;background:#1e1e1e;border-radius:2px;overflow:hidden">
+          <div style="height:100%;background:${cm.c||"#57DF7F"};width:${Math.min((custo/maxVal)*100,100)}%;border-radius:2px"></div>
+        </div>
+      </div>`:""}
+    </div>`;
+  }
+
+  const sidebarPeriods=[["mensal","Mês"],["semestral","Semestre"],["anual","Ano"]];
+  const mesNames={3:"Março",4:"Abril",5:"Maio",6:"Junho",7:"Julho",8:"Agosto",9:"Setembro",10:"Outubro",11:"Novembro",12:"Dezembro"};
+  const mesBrRows=MESES_ORDER.filter(m=>MES_NUM[m]!==99).map(m=>{
+    const mN=MES_NUM[m];
+    const mEvs=evs.filter(ev=>ev.n===mN);
+    if(!mEvs.length)return"";
+    const mTot=mEvs.reduce((s,ev)=>s+(planCusto(ev.id)||0),0);
+    const mNd=mEvs.filter(ev=>planCusto(ev.id)===null&&ev.vm===null).length;
+    return `<div class="mes-br-row">
+      <span class="mes-br-name">${m} <span style="color:#555;font-size:9px">${mEvs.length}ev</span></span>
+      <span class="mes-br-val">${mTot?`R$ ${fmtBRL(mTot)}`:""} ${mNd?`<span style="color:#555">+${mNd} ND</span>`:""}</span>
+    </div>`;
+  }).join("");
+
+  return `<div class="plan-wrap">
+    <div class="plan-list">
+      ${ids.length===0?`<div class="plan-empty">Nenhum evento no planejamento.<br>Adicione eventos clicando em <strong>+ Planejar</strong> ou <strong>+</strong> nos cards.</div>`:""}
+      ${futEvs.length?`<div class="plan-section-title">📌 Próximos eventos</div>${futEvs.map(itemHtml).join("")}`:""}
+      ${pastEvs.length?`<div class="plan-section-title" style="color:#f87171">⏮ Eventos passados</div>${pastEvs.map(itemHtml).join("")}`:""}
+    </div>
+    <div class="budget-sidebar">
+      <div class="budget-box">
+        <div class="budget-box-title">💰 Orçamento</div>
+        <div class="budget-period">
+          ${sidebarPeriods.map(([k,l])=>`<button class="period-btn${S.planPeriod===k?" active":""}" onclick="set('planPeriod','${k}')">${l}</button>`).join("")}
+        </div>
+        <div class="budget-total">
+          <div class="budget-total-lbl">Total estimado · ${S.planPeriod}</div>
+          <div class="budget-total-val">R$ ${fmtBRL(total)}</div>
+          ${nd?`<div class="budget-nd">${nd} evento${nd!==1?"s":""} com valor indefinido</div>`:""}
+        </div>
+        <div class="budget-bar-wrap" style="margin-top:12px">
+          <div class="budget-bar-label"><span>Eventos com valor</span><span>${periodEvs.filter(ev=>ev.vm).length}</span></div>
+          <div class="budget-bar-track"><div class="budget-bar-fill" style="width:${periodEvs.length?Math.round((periodEvs.filter(ev=>ev.vm).length/periodEvs.length)*100):0}%;background:linear-gradient(90deg,#57DF7F,#3A6BF5)"></div></div>
+        </div>
+        <div style="margin-top:4px">
+          <div class="budget-bar-label"><span>Total de eventos planejados</span><span>${periodEvs.length}</span></div>
+        </div>
+      </div>
+      ${mesBrRows?`<div class="budget-box">
+        <div class="budget-box-title">📆 Por mês</div>
+        <div class="mes-breakdown">${mesBrRows}</div>
+      </div>`:""}
+      ${ids.length?`<div class="budget-box">
+        <div class="budget-box-title">👥 Participação do time</div>
+        ${TEAM.map(p=>{
+          const count=evs.filter(ev=>S.plan[ev.id]?.pessoas?.includes(p.nome)).length;
+          if(!count)return"";
+          const pessoaCusto=evs.reduce((s,ev)=>{
+            if(!S.plan[ev.id]?.pessoas?.includes(p.nome))return s;
+            return s+(ev.vm||0);
+          },0);
+          return `<div class="budget-row">
+            <div class="budget-row-lbl" style="display:flex;align-items:center;gap:6px">
+              <div style="width:16px;height:16px;border-radius:50%;background:${hsl(p.nome)};display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff">${p.nome[0]}</div>
+              ${p.nome} <span style="color:#555;font-size:9px">${count}ev</span>
+            </div>
+            <div class="budget-row-val">R$ ${fmtBRL(pessoaCusto)}</div>
+          </div>`;
+        }).join("")}
+      </div>`:""}
+      <button class="export-btn" onclick="exportCSV()">⬇ Exportar CSV</button>
+    </div>
+  </div>`;
+}
+
+function renderTime(fl){
+  const pills=TEAM.map(p=>`<button class="ppill${S.teamSel.includes(p.nome)?" sel":""}" onclick="tog('teamSel','${p.nome}')">
+    <div style="width:20px;height:20px;border-radius:50%;background:${hsl(p.nome)};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff">${p.nome[0]}</div>
+    <div><div>${p.nome}</div><div class="ppill-sub">${p.cidade!=="—"?p.cidade:"localização indefinida"}</div></div>
+  </button>`).join("");
+  const members=S.teamSel.length===0?`<div class="empty">Selecione pelo menos uma pessoa.</div>`:
+    TEAM.filter(p=>S.teamSel.includes(p.nome)).map(p=>{
+      const evs=fl.filter(ev=>p.r==="Internacional"?ev.escopo==="Internacional":ev.estado===p.estado).sort((a,b)=>a.n-b.n);
+      const fut=evs.filter(ev=>isFuture(ev)||isCurrentMonth(ev));
+      return `<div class="mcard">
+        <div class="mhead">
+          <div class="mav" style="background:${hsl(p.nome)}">${p.nome[0]}</div>
+          <div><div style="font-weight:700;font-size:13px;color:#fff">${p.nome}</div><div style="font-size:10px;color:#888">${p.cargo} · ${p.cidade!=="—"?`${p.cidade}, ${p.estado}`:"Localização a definir"}</div></div>
+          <div style="margin-left:auto;display:flex;gap:5px">
+            ${bdg(`${fut.length} próximos`,fut.length?"#57DF7F":"#888","#1a2a1a",true)}
+            ${bdg(`${evs.length} total`,"#888","#1e1e1e",true)}
+          </div>
+        </div>
+        ${evs.length===0?`<div style="font-size:11px;color:#555;font-style:italic;padding:8px 0">Nenhum evento mapeado na região desta pessoa.</div>`:`
+        <div class="mevents">${evs.map(ev=>{
+          const cm=CAT_META[ev.cat]||{};const past=isPast(ev);
+          return `<div class="minicard${past?" past":""}" onclick="set('modal',${ev.id})" style="border-color:${cm.c||"#333"}44">
+            <div style="font-size:9px;color:#666;margin-bottom:2px">${ev.mes}${past?" · passado":""}</div>
+            <div style="font-size:11px;font-weight:700;color:#e8e8e8;margin-bottom:3px">${ev.evento}</div>
+            ${bdg(`${cm.e||""}${ev.cat}`,cm.c,cm.bg)}
+            <div style="font-size:10px;font-weight:700;color:${ev.vm!==null?'#57DF7F':'#555'};margin-top:5px">${ev.vd}</div>
+          </div>`;
+        }).join("")}</div>`}
+      </div>`;
+    }).join("");
+  return `<div class="team-wrap">
+    <div class="team-hint">Selecione membros para ver eventos próximos de onde moram. Eventos passados aparecem esmaecidos.</div>
+    <div class="person-pills">${pills}</div>
+    ${members}
+  </div>`;
+}
+
+function renderModal(){
+  if(!S.modal)return"";
+  const ev=E.find(e=>e.id===S.modal);if(!ev)return"";
+  const cm=CAT_META[ev.cat]||{};const mm=MARCA_META[ev.marca]||{};
+  const px=prox(ev);const past=isPast(ev);const planned=!!S.plan[ev.id];
+  const tot=ev.vm&&S.qtd>1?ev.vm*S.qtd:null;
+  return `<div class="modal-bg" onclick="set('modal',null)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-accent" style="background:linear-gradient(90deg,${cm.c||"#57DF7F"},${mm.c||"#3A6BF5"})"></div>
+      <div class="modal-top">
+        <div class="badges">
+          ${bdg(`${cm.e||""}${ev.cat}`,cm.c,cm.bg,true)}
+          ${bdg(ev.escopo==="Brasil"?"🇧🇷 Brasil":"🌍 Internacional",ev.escopo==="Brasil"?"#0B8043":"#9B59B6","#1a2a1a",true)}
+          ${bdg(ev.marca,mm.c,mm.bg,true)}
+          ${past?`<span class="past-tag" style="font-size:10px;padding:3px 8px">passado</span>`:isCurrentMonth(ev)?`<span class="future-tag" style="font-size:10px;padding:3px 8px">este mês</span>`:""}
+        </div>
+        <button class="modal-close" onclick="set('modal',null)">✕</button>
+      </div>
+      <div class="modal-title">${ev.evento}</div>
+      <div class="modal-grid">
+        <div class="mcell"><div class="mcell-lbl">📅 Mês</div><div class="mcell-val">${ev.mes}</div></div>
+        <div class="mcell"><div class="mcell-lbl">📍 Local</div><div class="mcell-val">${ev.local}</div></div>
+        <div class="mcell"><div class="mcell-lbl">🗺️ Região</div><div class="mcell-val">${ev.regiao}</div></div>
+        <div class="mcell"><div class="mcell-lbl">🏷️ Estado/País</div><div class="mcell-val">${ev.estado}</div></div>
+      </div>
+      <div class="msec"><div class="msec-lbl">💰 VALOR</div>
+        <div style="font-size:17px;font-weight:800;color:${ev.vm!==null?'#57DF7F':'#666'}">${ev.vd}</div>
+        ${tot?`<div style="font-size:11px;color:#888;margin-top:3px">Para ${S.qtd} pessoas: <strong style="color:#57DF7F">R$ ${fmtBRL(tot)}</strong> (mín.)</div>`:""}
+      </div>
+      <div class="msec"><div class="msec-lbl">📝 DESCRIÇÃO</div><div style="font-size:11px;color:#bbb;line-height:1.6">${ev.desc}</div></div>
+      ${px.length?`<div class="msec"><div class="msec-lbl">👥 TIME PRÓXIMO</div><div style="display:flex;flex-wrap:wrap">${px.map(p=>`<div class="mperson"><div style="width:18px;height:18px;border-radius:50%;background:${hsl(p.nome)};display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff">${p.nome[0]}</div><span style="font-size:10px;color:#ddd">${p.nome}</span><span style="font-size:9px;color:#555">${p.cidade}</span></div>`).join("")}</div></div>`:""}
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button onclick="${planned?`removePlan(${ev.id})`:`addPlan(${ev.id})`};set('modal',null)" style="flex:1;background:${planned?'#f8717122':'#57DF7F22'};border:1px solid ${planned?'#f8717155':'#57DF7F55'};border-radius:8px;color:${planned?'#f87171':'#57DF7F'};font-weight:700;font-size:11px;padding:9px;cursor:pointer">
+          ${planned?"✕ Remover do planejamento":"+ Adicionar ao planejamento"}
+        </button>
+        ${ev.site?`<a class="mlink" style="flex:2;padding:9px" href="${ev.site}" target="_blank">Acessar site oficial →</a>`:""}
+      </div>
+    </div>
+  </div>`;
+}
+
+// Export CSV
+function exportCSV(){
+  const ids=Object.keys(S.plan).map(Number);
+  const rows=[["Evento","Mês","Local","Categoria","Marca","Valor Base","Participantes","Custo Total"]];
+  ids.forEach(id=>{
+    const ev=E.find(e=>e.id===id);if(!ev)return;
+    const pessoas=(S.plan[id]?.pessoas||[]).join("; ");
+    const custo=planCusto(id);
+    rows.push([ev.evento,ev.mes,ev.local,ev.cat,ev.marca,ev.vd,pessoas,custo?`R$ ${fmtBRL(custo)}`:"A definir"]);
+  });
+  const csv=rows.map(r=>r.map(c=>`"${c}"`).join(",")).join("\n");
+  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="planejamento_eventos_2026.csv";a.click();
+}
+
+function render(){
+  const fl=filtered();
+  document.getElementById("root").innerHTML=`
+    ${renderHeader(fl)}
+    ${renderTabs()}
+    ${renderFilterBar(fl)}
+    ${S.tab==="eventos"?renderEventos(fl):""}
+    ${S.tab==="calendario"?renderCalendario(fl):""}
+    ${S.tab==="planejamento"?renderPlanejamento():""}
+    ${S.tab==="time"?renderTime(fl):""}
+    ${renderModal()}
+  `;
+}
+render();
+</script>
+</body>
+</html>
