@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Eventos 2026 — Spun Mídia</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', system-ui, sans-serif; background: #0C0C0E; color: #e8e8e8; min-height: 100vh; }
+select, input, button { font-family: inherit; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #111; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+.header { background: linear-gradient(135deg,#100F0F,#141420); border-bottom: 1px solid #222; padding: 16px 24px 14px; }
+.logo-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.logo-icon { width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#57DF7F,#3A6BF5);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#000; }
+.logo-title { font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px; }
+.logo-sub { font-size:10px;color:#57DF7F;font-weight:600;letter-spacing:.15em;text-transform:uppercase; }
+.stats-bar { display:flex;gap:10px;flex-wrap:wrap; }
+.stat { background:rgba(255,255,255,.04);border:1px solid #222;border-radius:10px;padding:7px 14px;display:flex;flex-direction:column;gap:1px; }
+.stat-num { font-size:19px;font-weight:800;color:#57DF7F; }
+.stat-lbl { font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.1em; }
+.filter-bar { background:#111115;border-bottom:1px solid #1e1e1e;padding:11px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end; }
+.fg { display:flex;flex-direction:column;gap:3px; }
+.fg label { font-size:9px;color:#666;text-transform:uppercase;letter-spacing:.1em; }
+.fg input, .fg select { background:#1a1a20;border:1px solid #2e2e38;border-radius:8px;color:#e8e8e8;padding:7px 10px;font-size:12px;outline:none; }
+.view-btns { margin-left:auto;display:flex;gap:6px;align-items:center; }
+.vbtn { background:transparent;border:1px solid #2e2e38;color:#888;border-radius:7px;padding:6px 12px;font-size:11px;cursor:pointer;font-weight:600; }
+.vbtn.active { background:#57DF7F22;border-color:#57DF7F;color:#57DF7F; }
+.vbtn.clear { color:#f87171;border-color:#f8717166; }
+.grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(288px,1fr));gap:12px;padding:18px 24px; }
+.card { background:#14141a;border:1px solid #222;border-radius:14px;padding:14px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden; }
+.card:hover { background:#1a1a24;border-color:#333;transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4); }
+.card-accent { position:absolute;top:0;left:0;right:0;height:3px; }
+.card-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:6px;flex-wrap:wrap; }
+.badges { display:flex;gap:4px;flex-wrap:wrap; }
+.badge { display:inline-block;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.03em;white-space:nowrap; }
+.card-title { font-weight:800;font-size:13px;color:#fff;margin-bottom:3px;line-height:1.3; }
+.card-local { font-size:11px;color:#888;margin-bottom:8px; }
+.card-desc { font-size:11px;color:#777;line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
+.card-bottom { display:flex;justify-content:space-between;align-items:center;border-top:1px solid #1e1e1e;padding-top:8px; }
+.card-valor { font-size:13px;font-weight:700; }
+.card-total { font-size:10px;color:#555;margin-top:2px; }
+.avatars { display:flex; }
+.av { width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;border:2px solid #14141a;margin-left:-6px; }
+.lista-wrap { padding:14px 24px; }
+.lista-head { display:grid;grid-template-columns:90px 1fr 75px 80px 155px 115px;gap:8px;align-items:center;background:#111115;border-radius:8px 8px 0 0;padding:8px 14px; }
+.lista-head span { font-size:9px;color:#666;font-weight:700;text-transform:uppercase; }
+.lrow { display:grid;grid-template-columns:90px 1fr 75px 80px 155px 115px;gap:8px;align-items:center;background:#0f0f14;padding:9px 14px;border-bottom:1px solid #1a1a1a;cursor:pointer;transition:background .1s; }
+.lrow:hover { background:#14141a; }
+.team-wrap { padding:18px 24px; }
+.team-hint { font-size:12px;color:#666;margin-bottom:14px; }
+.person-pills { display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px; }
+.ppill { background:#14141a;border:1px solid #2e2e38;border-radius:20px;padding:5px 12px;cursor:pointer;display:flex;align-items:center;gap:7px;font-size:12px;color:#aaa;font-weight:600; }
+.ppill.sel { background:#57DF7F22;border-color:#57DF7F;color:#57DF7F; }
+.ppill-sub { font-size:9px;opacity:.7; }
+.mcard { background:#14141a;border:1px solid #222;border-radius:12px;padding:14px;margin-bottom:12px; }
+.mhead { display:flex;align-items:center;gap:10px;margin-bottom:12px; }
+.mav { width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff; }
+.mevents { display:flex;flex-wrap:wrap;gap:8px; }
+.minicard { background:#0f0f14;border-radius:10px;padding:8px 12px;cursor:pointer;min-width:145px;flex:0 0 auto;transition:background .15s;border:1px solid #222; }
+.minicard:hover { background:#1a1a24; }
+.empty { text-align:center;color:#555;padding:60px;font-size:14px; }
+.modal-bg { position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px; }
+.modal-box { background:#15151e;border:1px solid #2a2a3a;border-radius:18px;max-width:570px;width:100%;max-height:88vh;overflow-y:auto;padding:24px; }
+.modal-accent { height:4px;border-radius:4px;margin-bottom:18px; }
+.modal-top { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px; }
+.modal-close { background:transparent;border:none;color:#666;font-size:18px;cursor:pointer; }
+.modal-title { font-size:20px;font-weight:800;color:#fff;margin-bottom:12px;line-height:1.2; }
+.modal-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px; }
+.mcell { background:#0f0f14;border-radius:8px;padding:9px 12px; }
+.mcell-lbl { font-size:9px;color:#666;margin-bottom:2px; }
+.mcell-val { font-size:12px;color:#ddd;font-weight:600; }
+.msec { background:#0f0f14;border-radius:8px;padding:10px 12px;margin-bottom:10px; }
+.msec-lbl { font-size:9px;color:#666;margin-bottom:5px; }
+.mlink { display:block;text-align:center;background:linear-gradient(135deg,#57DF7F,#3A6BF5);color:#000;font-weight:700;font-size:13px;padding:11px;border-radius:10px;text-decoration:none;margin-top:4px; }
+.mperson { display:flex;align-items:center;gap:6px;background:#1a1a24;border-radius:20px;padding:4px 10px;margin:3px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const TEAM=[
+  {nome:"Anna",    cargo:"Marketing",        cidade:"Campinas",       estado:"São Paulo",        regiao:"Sudeste"},
+  {nome:"Andrews", cargo:"Growth",           cidade:"Manaus",         estado:"Amazonas",         regiao:"Norte"},
+  {nome:"Luiza",   cargo:"—",               cidade:"—",              estado:"—",                regiao:"—"},
+  {nome:"Camile",  cargo:"—",               cidade:"Gravataí",       estado:"Rio Grande do Sul", regiao:"Sul"},
+  {nome:"Julia",   cargo:"—",               cidade:"Belo Horizonte", estado:"Minas Gerais",      regiao:"Sudeste"},
+  {nome:"Victória",cargo:"—",               cidade:"São Paulo",      estado:"São Paulo",         regiao:"Sudeste"},
+  {nome:"Rayssa",  cargo:"—",               cidade:"—",              estado:"—",                 regiao:"—"},
+  {nome:"Mariana", cargo:"Marketing Manager",cidade:"Amsterdam",     estado:"Países Baixos",     regiao:"Internacional"},
+  {nome:"Igor",    cargo:"—",               cidade:"São Paulo",      estado:"São Paulo",         regiao:"Sudeste"},
+];
+const CAT_META={
+  "Marketing & Comunicação":     {color:"#3A6BF5",bg:"#1a2a5e",emoji:"📣"},
+  "Games & Cultura Pop":         {color:"#E05C2A",bg:"#4a1e0e",emoji:"🎮"},
+  "SEO & Conteúdo":              {color:"#0B8043",bg:"#0b2e1a",emoji:"✍️"},
+  "Social & Influência":         {color:"#D93025",bg:"#4a0f0b",emoji:"📱"},
+  "E-commerce & Varejo":         {color:"#F9A825",bg:"#4a3200",emoji:"🛒"},
+  "Tech & Inovação":             {color:"#9B59B6",bg:"#2d1045",emoji:"⚡"},
+  "Negócios & Empreendedorismo": {color:"#00ACC1",bg:"#003040",emoji:"💼"},
+  "RH & Gestão":                 {color:"#7CB342",bg:"#1e2e0a",emoji:"👥"},
+  "iGaming & Betting":           {color:"#7E57C2",bg:"#1e0a40",emoji:"🎲"},
+};
+const MARCA_META={
+  "Spun":{color:"#3A6BF5",bg:"#0d1a3a"},
+  "Ezor":{color:"#E05C2A",bg:"#3a1208"},
+  "—":{color:"#888",bg:"#222"},
+};
+const E=[
+  {id:1, mes:"Março",    n:3, evento:"CMO Summit",              local:"Expo Center Norte (SP)",      estado:"São Paulo",         regiao:"Sudeste",          cat:"Marketing & Comunicação",    marca:"Spun",escopo:"Brasil",      vm:987,  vd:"R$ 987",             site:"https://cmosummit.com.br/",              desc:"Imersão com os maiores profissionais de marketing em um só lugar."},
+  {id:2, mes:"Março",    n:3, evento:"South Summit Brazil",     local:"Cais Mauá, Porto Alegre",     estado:"Rio Grande do Sul",  regiao:"Sul",              cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://www.southsummit.io/pt",          desc:"Ponto de conexões entre investidores, empresas e startups."},
+  {id:3, mes:"Março",    n:3, evento:"Tijuca Geek Festival",    local:"Rio de Janeiro",              estado:"Rio de Janeiro",     regiao:"Sudeste",          cat:"Games & Cultura Pop",        marca:"Ezor",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://tijucageekfestival.com.br/",      desc:"Anime, manga, cosplay, K-Pop, RPG e cultura japonesa."},
+  {id:4, mes:"Março",    n:3, evento:"Geek Day",                local:"Londrina (PR)",               estado:"Paraná",             regiao:"Sul",              cat:"Games & Cultura Pop",        marca:"Ezor",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"",                                       desc:"Evento de cultura gamer, cosplay, kpop, anime."},
+  {id:5, mes:"Março",    n:3, evento:"Video Game Hall",         local:"Rio de Janeiro",              estado:"Rio de Janeiro",     regiao:"Sudeste",          cat:"Games & Cultura Pop",        marca:"Ezor",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"",                                       desc:"Maior celebração gamer do Rio."},
+  {id:6, mes:"Abril",    n:4, evento:"VTEX Day",                local:"São Paulo Expo (SP)",         estado:"São Paulo",          regiao:"Sudeste",          cat:"E-commerce & Varejo",        marca:"Spun",escopo:"Brasil",      vm:2000, vd:"R$ 2.000",           site:"https://vtexday.vtex.com/",              desc:"O maior evento de digital commerce do mundo."},
+  {id:7, mes:"Abril",    n:4, evento:"BiS SiGMA South America", local:"São Paulo (SP)",              estado:"São Paulo",          regiao:"Sudeste",          cat:"iGaming & Betting",          marca:"Ezor",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://sigma.world/pt-br/",             desc:"Ecossistema de iGaming, apostas esportivas e afiliados."},
+  {id:8, mes:"Maio",     n:5, evento:"Gramado Summit",          local:"Gramado Serra Park (RS)",     estado:"Rio Grande do Sul",  regiao:"Sul",              cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",      vm:1890, vd:"R$ 1.890",           site:"https://www.gramadosummit.com/",         desc:"Palestrantes de topo sobre empreendedorismo, inovação e marketing."},
+  {id:9, mes:"Maio",     n:5, evento:"MMA Impact",              local:"São Paulo (SP)",              estado:"São Paulo",          regiao:"Sudeste",          cat:"Marketing & Comunicação",    marca:"Spun",escopo:"Brasil",      vm:999,  vd:"R$ 999 – 3.699",     site:"https://mmaglobal.com/impactbrasil2026", desc:"Criatividade, tecnologia e comportamento moldando marcas e negócios."},
+  {id:10,mes:"Maio",     n:5, evento:"Proxxima Meio&Mensagem",  local:"WTC (SP)",                    estado:"São Paulo",          regiao:"Sudeste",          cat:"Marketing & Comunicação",    marca:"Spun",escopo:"Brasil",      vm:1950, vd:"R$ 1.950",           site:"https://evento.proxxima.com.br/",        desc:"Líderes de marcas, agências e adtechs no futuro do marketing."},
+  {id:11,mes:"Maio",     n:5, evento:"RIO2C",                   local:"Cidade das Artes, RJ",        estado:"Rio de Janeiro",     regiao:"Sudeste",          cat:"Marketing & Comunicação",    marca:"Spun",escopo:"Brasil",      vm:1300, vd:"R$ 1.300 – 3.700", site:"https://www.rio2c.com/",                 desc:"Maior encontro de criatividade e economia criativa da AL."},
+  {id:12,mes:"Maio",     n:5, evento:"Conexão Social Media",    local:"São Paulo Expo (SP)",         estado:"São Paulo",          regiao:"Sudeste",          cat:"Social & Influência",        marca:"Spun",escopo:"Brasil",      vm:947,  vd:"R$ 947",             site:"https://www.conexaosocialmedia.com/",    desc:"Um dos maiores eventos brasileiros focados em redes sociais."},
+  {id:13,mes:"Maio",     n:5, evento:"Afiliados Brazil",        local:"Frei Caneca (SP)",            estado:"São Paulo",          regiao:"Sudeste",          cat:"E-commerce & Varejo",        marca:"Spun",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://afiliadosbrasil.com.br/",        desc:"Maior evento de afiliados do mundo."},
+  {id:14,mes:"Maio",     n:5, evento:"GamesCon Latam",          local:"São Paulo (SP)",              estado:"São Paulo",          regiao:"Sudeste",          cat:"Games & Cultura Pop",        marca:"Ezor",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://latam.gamescom.global/",         desc:"Uma das maiores feiras de games da América Latina."},
+  {id:15,mes:"Maio",     n:5, evento:"Brasilia Game Festival",  local:"Brasília",                    estado:"Brasília",           regiao:"Centro-Oeste",     cat:"Games & Cultura Pop",        marca:"Ezor",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"",                                       desc:"Festival gamer com competições, stands e cultura pop."},
+  {id:16,mes:"Junho",    n:6, evento:"Digimarcon Brazil",       local:"Intercontinental SP",         estado:"São Paulo",          regiao:"Sudeste",          cat:"Marketing & Comunicação",    marca:"Spun",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://digimarconbrazil.com.br/",       desc:"Premier Digital Marketing Conference do Brasil."},
+  {id:17,mes:"Junho",    n:6, evento:"Varejo TechDay",          local:"Centro ACATE (SC)",           estado:"Santa Catarina",     regiao:"Sul",              cat:"E-commerce & Varejo",        marca:"Spun",escopo:"Brasil",      vm:439,  vd:"R$ 439",             site:"https://www.acate.com.br/",              desc:"Maior evento de tecnologia para o varejo do sul do Brasil."},
+  {id:18,mes:"Junho",    n:6, evento:"Influent Summit",         local:"Expo Center Norte (SP)",      estado:"São Paulo",          regiao:"Sudeste",          cat:"Social & Influência",        marca:"Spun",escopo:"Brasil",      vm:1497, vd:"R$ 1.497",           site:"https://www.influentsummit.com.br/",     desc:"Marcas, plataformas, creators e líderes do mercado de influência."},
+  {id:19,mes:"Junho",    n:6, evento:"Web Summit Rio",          local:"Rio de Janeiro",              estado:"Rio de Janeiro",     regiao:"Sudeste",          cat:"Tech & Inovação",            marca:"Spun",escopo:"Brasil",      vm:595,  vd:"R$ 595 – 7.495",   site:"https://rio.websummit.com/pt-br/",       desc:"Versão brasileira do maior evento de tecnologia da Europa."},
+  {id:20,mes:"Junho",    n:6, evento:"GAT Brazil",              local:"Distrito Anhembi (SP)",       estado:"São Paulo",          regiao:"Sudeste",          cat:"iGaming & Betting",          marca:"Ezor",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://www.gatevents.net/",             desc:"Líderes de jogos online, apostas esportivas e eSports."},
+  {id:21,mes:"Julho",    n:7, evento:"O novo mercado",          local:"Vibra (SP)",                  estado:"São Paulo",          regiao:"Sudeste",          cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",      vm:2197, vd:"R$ 2.197",           site:"https://onovomercado.com/",              desc:"4.000 pessoas reunidas para crescer no mercado digital."},
+  {id:22,mes:"Julho",    n:7, evento:"Expo Empreendedor",       local:"Expo Center Norte (SP)",      estado:"São Paulo",          regiao:"Sudeste",          cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",      vm:1597, vd:"R$ 1.597",           site:"https://expoempreendedor.com.br/",       desc:"O evento de negócios que mais cresce no Brasil."},
+  {id:23,mes:"Julho",    n:7, evento:"E-commerce Brasil Forum", local:"Distrito Anhembi (SP)",       estado:"São Paulo",          regiao:"Sudeste",          cat:"E-commerce & Varejo",        marca:"Spun",escopo:"Brasil",      vm:2397, vd:"R$ 2.397",           site:"https://eventos.ecommercebrasil.com.br/", desc:"3 dias de conteúdo de alta qualidade e networking estratégico."},
+  {id:24,mes:"Julho",    n:7, evento:"Anime Friends",           local:"São Paulo (SP)",              estado:"São Paulo",          regiao:"Sudeste",          cat:"Games & Cultura Pop",        marca:"Ezor",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://animefriends.com.br/",           desc:"Maior evento de cultura pop, anime e games do Brasil."},
+  {id:25,mes:"Agosto",   n:8, evento:"Rio Innovation Week",     local:"Pier Mauá (RJ)",              estado:"Rio de Janeiro",     regiao:"Sudeste",          cat:"Tech & Inovação",            marca:"Spun",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://rioinnovationweek.com.br/",      desc:"Maior conferência de negócios, creator economy e inovação."},
+  {id:26,mes:"Agosto",   n:8, evento:"Brand100",                local:"Costão do Santinho (SC)",     estado:"Santa Catarina",     regiao:"Sul",              cat:"Marketing & Comunicação",    marca:"Spun",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://brand100events.com/brasil/",     desc:"Veículos, agências e anunciantes discutindo propostas exclusivas."},
+  {id:27,mes:"Agosto",   n:8, evento:"Varejo Experience",       local:"Foz do Iguaçu (PR)",          estado:"Paraná",             regiao:"Sul",              cat:"E-commerce & Varejo",        marca:"Spun",escopo:"Brasil",      vm:1999, vd:"R$ 1.999",           site:"https://varejoexperience.com.br/",       desc:"Maiores nomes e marcas do Brasil com networking de alto nível."},
+  {id:28,mes:"Agosto",   n:8, evento:"Startup Summit",          local:"Centrosul (SC)",              estado:"Santa Catarina",     regiao:"Sul",              cat:"Tech & Inovação",            marca:"Spun",escopo:"Brasil",      vm:1499, vd:"R$ 1.499",           site:"https://www.startupsummit.com.br/",      desc:"200 palestrantes, 10.000 pessoas. Startups e investidores."},
+  {id:29,mes:"Agosto",   n:8, evento:"Brazil Promotion",        local:"Distrito Anhembi (SP)",       estado:"São Paulo",          regiao:"Sudeste",          cat:"Marketing & Comunicação",    marca:"Spun",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://www.brazilpromotion.com.br/",    desc:"22ª edição. Principal feira de marketing e negócios corporativos do Brasil."},
+  {id:30,mes:"Agosto",   n:8, evento:"Conarh",                  local:"São Paulo Expo (SP)",         estado:"São Paulo",          regiao:"Sudeste",          cat:"RH & Gestão",                marca:"Spun",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://conarh.org.br/",                 desc:"Maior evento de RH e gestão de pessoas do mundo."},
+  {id:31,mes:"Agosto",   n:8, evento:"G&M Events Brazil",       local:"São Paulo (SP)",              estado:"São Paulo",          regiao:"Sudeste",          cat:"Games & Cultura Pop",        marca:"Ezor",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"",                                       desc:"Ponto de encontro para a indústria de jogos no Brasil."},
+  {id:32,mes:"Setembro", n:9, evento:"Conarec",                 local:"Transamérica Expo (SP)",      estado:"São Paulo",          regiao:"Sudeste",          cat:"Marketing & Comunicação",    marca:"Spun",escopo:"Brasil",      vm:3180, vd:"R$ 3.180",           site:"https://conarec.com.br/",                desc:"Maior evento dedicado à experiência do cliente no mundo."},
+  {id:33,mes:"Setembro", n:9, evento:"Latam Retail Show",       local:"Expo Center Norte (SP)",      estado:"São Paulo",          regiao:"Sudeste",          cat:"E-commerce & Varejo",        marca:"Spun",escopo:"Brasil",      vm:3400, vd:"R$ 3.400",           site:"https://latamretailshow.com.br",          desc:"O mais relevante evento de varejo da América Latina."},
+  {id:34,mes:"Setembro", n:9, evento:"HJ Conference",           local:"Concórdia (SC)",              estado:"Santa Catarina",     regiao:"Sul",              cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",      vm:2699, vd:"R$ 2.699",           site:"https://hjconference.com.br/",            desc:"Conferência de conteúdo e conexões que transforma o empreendedor."},
+  {id:35,mes:"Setembro", n:9, evento:"YOUpix Summit",           local:"Transamérica Expo (SP)",      estado:"São Paulo",          regiao:"Sudeste",          cat:"Social & Influência",        marca:"Spun",escopo:"Brasil",      vm:593,  vd:"R$ 593",             site:"https://www.youpix.com.br/",             desc:"Principal evento de creator economy da América Latina."},
+  {id:36,mes:"Setembro", n:9, evento:"D2C Summit",              local:"Distrito Anhembi (SP)",       estado:"São Paulo",          regiao:"Sudeste",          cat:"E-commerce & Varejo",        marca:"Spun",escopo:"Brasil",      vm:899,  vd:"R$ 899",             site:"https://d2csummit.com.br/",              desc:"Relação direta com o cliente, sem intermediários."},
+  {id:37,mes:"Setembro", n:9, evento:"Digitalks Expo",          local:"A divulgar",                  estado:"A definir",          regiao:"A definir",        cat:"Tech & Inovação",            marca:"Spun",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://digitalks.com.br/expo",          desc:"Trilhas de FinTech, AI, Venture Capital e Smart Cities."},
+  {id:38,mes:"Setembro", n:9, evento:"Mercado Livre Experience",local:"Transamérica Expo (SP)",      estado:"São Paulo",          regiao:"Sudeste",          cat:"E-commerce & Varejo",        marca:"Spun",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://mercadolivreexperience.com.br/",  desc:"Fortalecimento do ecossistema de vendas online do Mercado Livre."},
+  {id:39,mes:"Outubro",  n:10,evento:"Universo TOTVS",          local:"Expo Center Norte (SP)",      estado:"São Paulo",          regiao:"Sudeste",          cat:"Tech & Inovação",            marca:"Spun",escopo:"Brasil",      vm:1600, vd:"R$ 1.600",           site:"https://eventos.totvs.com/",             desc:"Gestão empresarial, tecnologia e inovação com a TOTVS."},
+  {id:40,mes:"Outubro",  n:10,evento:"Brasil Games Show (BGS)", local:"Distrito Anhembi (SP)",       estado:"São Paulo",          regiao:"Sudeste",          cat:"Games & Cultura Pop",        marca:"Ezor",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://www.brasilgameshow.com.br/",      desc:"Maior feira de games da América Latina e uma das maiores do mundo."},
+  {id:41,mes:"Novembro", n:11,evento:"SEO Summit",              local:"São Paulo (SP)",              estado:"São Paulo",          regiao:"Sudeste",          cat:"SEO & Conteúdo",             marca:"Spun",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"https://www.seosummit.com.br/",           desc:"Maior evento de SEO, Conteúdo e Marketing Orgânico do Brasil."},
+  {id:42,mes:"Dezembro", n:12,evento:"Product Camp",            local:"Frei Caneca (SP)",            estado:"São Paulo",          regiao:"Sudeste",          cat:"Tech & Inovação",            marca:"Spun",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"",                                       desc:"Evento de produto e inovação."},
+  {id:43,mes:"Dezembro", n:12,evento:"CCXP",                    local:"São Paulo Expo (SP)",         estado:"São Paulo",          regiao:"Sudeste",          cat:"Games & Cultura Pop",        marca:"Ezor",escopo:"Brasil",      vm:null, vd:"A divulgar",         site:"",                                       desc:"Maior festival de cultura pop do mundo."},
+  {id:44,mes:"A definir",n:99,evento:"Growth Experience",       local:"Chapecó (SC)",                estado:"Santa Catarina",     regiao:"Sul",              cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",      vm:1197, vd:"R$ 1.197",           site:"",                                       desc:"Crescimento e estratégia de negócios."},
+  {id:45,mes:"A definir",n:99,evento:"MXMA Maximidia",          local:"Hotel Unique (SP)",           estado:"São Paulo",          regiao:"Sudeste",          cat:"Marketing & Comunicação",    marca:"Spun",escopo:"Brasil",      vm:3570, vd:"R$ 3.570",           site:"",                                       desc:"Meio e Mensagem. Alto nível de marketing e comunicação."},
+  {id:46,mes:"A definir",n:99,evento:"Analytics Summit",        local:"Vila Olímpia (SP)",           estado:"São Paulo",          regiao:"Sudeste",          cat:"Tech & Inovação",            marca:"Spun",escopo:"Brasil",      vm:1694, vd:"R$ 1.694",           site:"",                                       desc:"Dados, analytics e inteligência de negócios."},
+  {id:47,mes:"A definir",n:99,evento:"CRM Zummit",              local:"Florianópolis (SC)",          estado:"Santa Catarina",     regiao:"Sul",              cat:"Marketing & Comunicação",    marca:"Spun",escopo:"Brasil",      vm:585,  vd:"R$ 585",             site:"",                                       desc:"CRM, fidelização e relacionamento com o cliente."},
+  {id:48,mes:"A definir",n:99,evento:"Growth Conference Brasil",local:"A divulgar",                  estado:"A definir",          regiao:"A definir",        cat:"Negócios & Empreendedorismo",marca:"Spun",escopo:"Brasil",      vm:849,  vd:"R$ 849",             site:"",                                       desc:"Estratégias de crescimento acelerado."},
+  {id:49,mes:"Março",    n:3, evento:"SXSW",                    local:"Austin, TX — EUA",            estado:"EUA",                regiao:"América do Norte", cat:"Marketing & Comunicação",    marca:"—",  escopo:"Internacional",vm:1800, vd:"$ 1.800+",           site:"https://www.sxsw.com",                   desc:"O cruzamento global entre tecnologia, cultura e marketing."},
+  {id:50,mes:"Março",    n:3, evento:"Adobe Summit",            local:"Las Vegas, NV — EUA",         estado:"EUA",                regiao:"América do Norte", cat:"Tech & Inovação",            marca:"—",  escopo:"Internacional",vm:1500, vd:"$ 1.500+",           site:"https://summit.adobe.com",               desc:"IA, personalização e experiência digital em escala."},
+  {id:51,mes:"Abril",    n:4, evento:"Possible Conference",     local:"Miami Beach — EUA",           estado:"EUA",                regiao:"América do Norte", cat:"Marketing & Comunicação",    marca:"—",  escopo:"Internacional",vm:2500, vd:"$ 2.500+",           site:"https://possibleevent.com",              desc:"5.000+ executivos de marketing. Foco em marca e negócios."},
+  {id:52,mes:"Abril",    n:4, evento:"IAB NewFronts",           local:"Nova York — EUA",             estado:"EUA",                regiao:"América do Norte", cat:"Social & Influência",        marca:"—",  escopo:"Internacional",vm:0,    vd:"Gratuito",           site:"https://www.iab.com/events/newfronts",   desc:"Maior marketplace digital de conteúdo do mundo."},
+  {id:53,mes:"Maio",     n:5, evento:"OMR Festival",            local:"Hamburgo — Alemanha",          estado:"Alemanha",           regiao:"Europa",           cat:"Marketing & Comunicação",    marca:"—",  escopo:"Internacional",vm:270,  vd:"€ 249+",             site:"https://omr.com",                        desc:"67.000 visitantes, Tom Brady, Scott Galloway. Part festival, part conference."},
+  {id:54,mes:"Maio",     n:5, evento:"DMWF Global",             local:"Londres — Reino Unido",       estado:"Reino Unido",         regiao:"Europa",           cat:"Social & Influência",        marca:"—",  escopo:"Internacional",vm:510,  vd:"£ 449+",             site:"https://digitalmarketingworldforum.com",  desc:"Estratégia de conteúdo, social media e crescimento de marca global."},
+  {id:55,mes:"Junho",    n:6, evento:"Cannes Lions",            local:"Cannes — França",              estado:"França",             regiao:"Europa",           cat:"Marketing & Comunicação",    marca:"—",  escopo:"Internacional",vm:3300, vd:"€ 3.000+",           site:"https://www.canneslions.com",             desc:"73ª edição. O festival mais prestigioso de criatividade do mundo. 15.000 delegados."},
+  {id:56,mes:"Junho",    n:6, evento:"MAD//Fest",               local:"Londres — Reino Unido",       estado:"Reino Unido",         regiao:"Europa",           cat:"Marketing & Comunicação",    marca:"—",  escopo:"Internacional",vm:0,    vd:"Convidados",         site:"https://www.madfestlondon.com",           desc:"Disneyland das marcas. 15.000+ convidados. Experiências imersivas."},
+  {id:57,mes:"Junho",    n:6, evento:"Gartner Symposium",       local:"Nova York — EUA",             estado:"EUA",                regiao:"América do Norte", cat:"Tech & Inovação",            marca:"—",  escopo:"Internacional",vm:4200, vd:"€ 3.850+",           site:"https://www.gartner.com/en/conferences",  desc:"Referência para CMOs. Pesquisa aplicada e futuro do cliente."},
+  {id:58,mes:"Setembro", n:9, evento:"DMEXCO",                  local:"Colônia — Alemanha",           estado:"Alemanha",           regiao:"Europa",           cat:"Tech & Inovação",            marca:"—",  escopo:"Internacional",vm:110,  vd:"€ 99+",              site:"https://dmexco.com",                     desc:"Principal evento europeu de marketing digital e tech."},
+  {id:59,mes:"Setembro", n:9, evento:"Content Marketing World", local:"Boston — EUA",               estado:"EUA",                regiao:"América do Norte", cat:"SEO & Conteúdo",             marca:"—",  escopo:"Internacional",vm:1200, vd:"$ 1.200+",           site:"https://www.contentmarketingworld.com",   desc:"A conferência que criou o content marketing. IA e ROI."},
+  {id:60,mes:"Outubro",  n:10,evento:"Advertising Week NY",     local:"Nova York — EUA",             estado:"EUA",                regiao:"América do Norte", cat:"Marketing & Comunicação",    marca:"—",  escopo:"Internacional",vm:550,  vd:"$ 500+",             site:"https://advertisingweek.com",             desc:"16.000 participantes. Tudo que move publicidade e comunicação."},
+  {id:61,mes:"Outubro",  n:10,evento:"Social Media Mktg World", local:"San Diego — EUA",             estado:"EUA",                regiao:"América do Norte", cat:"Social & Influência",        marca:"—",  escopo:"Internacional",vm:1400, vd:"$ 1.400+",           site:"https://www.socialmediaexaminer.com",     desc:"100% pitch-free. 3.000 participantes de 50 países."},
+  {id:62,mes:"Novembro", n:11,evento:"Web Summit",              local:"Lisboa — Portugal",           estado:"Portugal",            regiao:"Europa",           cat:"Tech & Inovação",            marca:"—",  escopo:"Internacional",vm:545,  vd:"€ 495+",             site:"https://websummit.com",                   desc:"Um dos maiores eventos de tecnologia da Europa. Startups e líderes globais."},
+];
+
+const MESES=["Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro","A definir"];
+const CATS=["Todas",...Object.keys(CAT_META)];
+const REGS=["Todas",...[...new Set(E.map(e=>e.regiao))].sort()];
+
+function hsl(s){return `hsl(${(s.charCodeAt(0)*47)%360},50%,42%)`;}
+function prox(ev){return TEAM.filter(p=>ev.escopo==="Internacional"&&p.regiao==="Internacional"||ev.escopo==="Brasil"&&p.estado===ev.estado);}
+
+let S={escopo:"Todos",cat:"Todas",reg:"Todas",marca:"Todas",mes:"Todos",bpp:"",qtd:1,busca:"",view:"cards",modal:null,sel:[]};
+
+function filtered(){
+  const budget=S.bpp?parseFloat(S.bpp)*S.qtd:null;
+  const bl=S.busca.toLowerCase();
+  return E.filter(ev=>{
+    if(S.escopo!=="Todos"&&ev.escopo!==S.escopo)return false;
+    if(S.cat!=="Todas"&&ev.cat!==S.cat)return false;
+    if(S.reg!=="Todas"&&ev.regiao!==S.reg)return false;
+    if(S.mes!=="Todos"&&ev.mes!==S.mes)return false;
+    if(S.marca==="Internacional"&&ev.escopo!=="Internacional")return false;
+    if(S.marca!=="Todas"&&S.marca!=="Internacional"&&ev.marca!==S.marca)return false;
+    if(budget&&ev.vm&&ev.vm*S.qtd>budget)return false;
+    if(bl&&!ev.evento.toLowerCase().includes(bl)&&!ev.desc.toLowerCase().includes(bl))return false;
+    return true;
+  }).sort((a,b)=>a.n-b.n||a.evento.localeCompare(b.evento));
+}
+
+function set(k,v){S[k]=v;render();}
+function tog(v){S.sel=S.sel.includes(v)?S.sel.filter(x=>x!==v):[...S.sel,v];render();}
+function clr(){S={...S,escopo:"Todos",cat:"Todas",reg:"Todas",marca:"Todas",mes:"Todos",bpp:"",qtd:1,busca:"",sel:[]};render();}
+
+function bdg(t,c,bg,big){
+  const p=big?"3px 10px":"2px 7px",fs=big?11:10;
+  return `<span class="badge" style="background:${bg};color:${c};font-size:${fs}px;padding:${p}">${t}</span>`;
+}
+
+function render(){
+  const fl=filtered();
+  const cv=fl.filter(e=>e.vm!==null&&e.vm>0);
+  const med=cv.length?Math.round(cv.reduce((s,e)=>s+e.vm,0)/cv.length):0;
+  const tbgt=S.bpp&&S.qtd>0?parseFloat(S.bpp)*S.qtd:null;
+
+  const opts=(arr,cur)=>arr.map(v=>`<option${v===cur?" selected":""}>${v}</option>`).join("");
+
+  // CARDS
+  let content="";
+  if(S.view==="cards"){
+    if(!fl.length){content=`<div class="empty">Nenhum evento encontrado com esses filtros.</div>`;}
+    else{content=`<div class="grid">${fl.map(ev=>{
+      const cm=CAT_META[ev.cat]||{};
+      const mm=MARCA_META[ev.marca]||{};
+      const px=prox(ev);
+      const tot=ev.vm&&S.qtd>1?ev.vm*S.qtd:null;
+      return `<div class="card" onclick="set('modal',${ev.id})">
+        <div class="card-accent" style="background:linear-gradient(90deg,${cm.color||"#57DF7F"},transparent)"></div>
+        <div class="card-header"><div class="badges">${bdg(ev.mes,"#999","#1e1e1e")} ${bdg(`${cm.emoji||""}${ev.cat}`,cm.color,cm.bg)}</div>${bdg(ev.marca,mm.color,mm.bg)}</div>
+        <div class="card-title">${ev.evento}</div>
+        <div class="card-local">📍 ${ev.local}</div>
+        <div class="card-desc">${ev.desc}</div>
+        <div class="card-bottom">
+          <div><div class="card-valor" style="color:${ev.vm!==null?'#57DF7F':'#666'}">${ev.vd}</div>${tot?`<div class="card-total">Total(${S.qtd}×): R$${tot.toLocaleString("pt-BR")}</div>`:""}</div>
+          ${px.length?`<div class="avatars">${px.slice(0,4).map(p=>`<div class="av" title="${p.nome}" style="background:${hsl(p.nome)}">${p.nome[0]}</div>`).join("")}</div>`:""}
+        </div>
+      </div>`;
+    }).join("")}</div>`;}
+  }
+
+  // LISTA
+  if(S.view==="lista"){
+    if(!fl.length){content=`<div class="empty">Nenhum evento encontrado.</div>`;}
+    else{content=`<div class="lista-wrap">
+      <div class="lista-head"><span>MÊS</span><span>EVENTO</span><span>MARCA</span><span>ESCOPO</span><span>CATEGORIA</span><span>VALOR</span></div>
+      ${fl.map(ev=>{
+        const cm=CAT_META[ev.cat]||{};const mm=MARCA_META[ev.marca]||{};
+        return `<div class="lrow" onclick="set('modal',${ev.id})">
+          <span style="font-size:11px;color:#888">${ev.mes}</span>
+          <span style="font-size:12px;font-weight:700;color:#e8e8e8">${ev.evento}</span>
+          ${bdg(ev.marca,mm.color,mm.bg)}
+          ${bdg(ev.escopo==="Brasil"?"🇧🇷 BR":"🌍 Intl",ev.escopo==="Brasil"?"#0B8043":"#9B59B6","#1a2a1a")}
+          <span style="font-size:10px;color:${cm.color||"#aaa"}">${cm.emoji||""} ${ev.cat}</span>
+          <span style="font-size:12px;font-weight:700;color:${ev.vm!==null?'#57DF7F':'#555'}">${ev.vd}</span>
+        </div>`;
+      }).join("")}
+    </div>`;}
+  }
+
+  // TIME
+  if(S.view==="time"){
+    const pills=TEAM.map(p=>`<button class="ppill${S.sel.includes(p.nome)?" sel":""}" onclick="tog('${p.nome}')">
+      <div style="width:22px;height:22px;border-radius:50%;background:${hsl(p.nome)};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">${p.nome[0]}</div>
+      <div><div>${p.nome}</div><div class="ppill-sub">${p.cidade!=="—"?p.cidade:"indefinida"}</div></div>
+    </button>`).join("");
+    const members=S.sel.length===0?`<div class="empty">Selecione pelo menos uma pessoa.</div>`:
+      TEAM.filter(p=>S.sel.includes(p.nome)).map(p=>{
+        const evs=E.filter(ev=>p.regiao==="Internacional"?ev.escopo==="Internacional":ev.estado===p.estado).sort((a,b)=>a.n-b.n);
+        return `<div class="mcard">
+          <div class="mhead">
+            <div class="mav" style="background:${hsl(p.nome)}">${p.nome[0]}</div>
+            <div><div style="font-weight:700;font-size:13px;color:#fff">${p.nome}</div><div style="font-size:11px;color:#888">${p.cargo} · ${p.cidade!=="—"?`${p.cidade}, ${p.estado}`:"Localização a definir"}</div></div>
+            <div style="margin-left:auto">${bdg(`${evs.length} evento${evs.length!==1?"s":""}`,evs.length?"#57DF7F":"#888","#1a2a1a",true)}</div>
+          </div>
+          ${evs.length===0?`<div style="font-size:12px;color:#555;font-style:italic">Nenhum evento mapeado na região.</div>`:`
+          <div class="mevents">${evs.map(ev=>{const cm=CAT_META[ev.cat]||{};return `<div class="minicard" onclick="set('modal',${ev.id})" style="border-color:${cm.color||"#333"}44">
+            <div style="font-size:10px;color:#666;margin-bottom:2px">${ev.mes}</div>
+            <div style="font-size:12px;font-weight:700;color:#e8e8e8;margin-bottom:4px">${ev.evento}</div>
+            ${bdg(`${cm.emoji||""}${ev.cat}`,cm.color,cm.bg)}
+            <div style="font-size:11px;font-weight:700;color:${ev.vm!==null?'#57DF7F':'#555'};margin-top:6px">${ev.vd}</div>
+          </div>`;}).join("")}</div>`}
+        </div>`;
+      }).join("");
+    content=`<div class="team-wrap"><div class="team-hint">Selecione membros para ver eventos próximos de onde moram.</div><div class="person-pills">${pills}</div>${members}</div>`;
+  }
+
+  // MODAL
+  let modal="";
+  if(S.modal){
+    const ev=E.find(e=>e.id===S.modal);
+    if(ev){
+      const cm=CAT_META[ev.cat]||{};const mm=MARCA_META[ev.marca]||{};const px=prox(ev);
+      const tot=ev.vm&&S.qtd>1?ev.vm*S.qtd:null;
+      modal=`<div class="modal-bg" onclick="set('modal',null)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+          <div class="modal-accent" style="background:linear-gradient(90deg,${cm.color||"#57DF7F"},${mm.color||"#3A6BF5"})"></div>
+          <div class="modal-top">
+            <div class="badges">${bdg(`${cm.emoji||""}${ev.cat}`,cm.color,cm.bg,true)} ${bdg(ev.escopo==="Brasil"?"🇧🇷 Brasil":"🌍 Internacional",ev.escopo==="Brasil"?"#0B8043":"#9B59B6","#1a2a1a",true)} ${bdg(ev.marca,mm.color,mm.bg,true)}</div>
+            <button class="modal-close" onclick="set('modal',null)">✕</button>
+          </div>
+          <div class="modal-title">${ev.evento}</div>
+          <div class="modal-grid">
+            <div class="mcell"><div class="mcell-lbl">📅 Mês</div><div class="mcell-val">${ev.mes}</div></div>
+            <div class="mcell"><div class="mcell-lbl">📍 Local</div><div class="mcell-val">${ev.local}</div></div>
+            <div class="mcell"><div class="mcell-lbl">🗺️ Região</div><div class="mcell-val">${ev.regiao}</div></div>
+            <div class="mcell"><div class="mcell-lbl">🏷️ Estado/País</div><div class="mcell-val">${ev.estado}</div></div>
+          </div>
+          <div class="msec"><div class="msec-lbl">💰 VALOR</div>
+            <div style="font-size:18px;font-weight:800;color:${ev.vm!==null?'#57DF7F':'#666'}">${ev.vd}</div>
+            ${tot?`<div style="font-size:12px;color:#888;margin-top:4px">Para ${S.qtd} pessoas: <strong style="color:#57DF7F">R$ ${tot.toLocaleString("pt-BR")}</strong> (mínimo)</div>`:""}
+          </div>
+          <div class="msec"><div class="msec-lbl">📝 DESCRIÇÃO</div><div style="font-size:12px;color:#bbb;line-height:1.6">${ev.desc}</div></div>
+          ${px.length?`<div class="msec"><div class="msec-lbl">👥 TIME PRÓXIMO</div><div style="display:flex;flex-wrap:wrap">${px.map(p=>`<div class="mperson"><div style="width:20px;height:20px;border-radius:50%;background:${hsl(p.nome)};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff">${p.nome[0]}</div><span style="font-size:11px;color:#ddd">${p.nome}</span><span style="font-size:10px;color:#555">${p.cidade}</span></div>`).join("")}</div></div>`:""}
+          ${ev.site?`<a class="mlink" href="${ev.site}" target="_blank">Acessar site oficial →</a>`:""}
+        </div>
+      </div>`;
+    }
+  }
+
+  document.getElementById("root").innerHTML=`
+    <div class="header">
+      <div class="logo-row">
+        <div class="logo-icon">S</div>
+        <div><div class="logo-title">Eventos 2026</div><div class="logo-sub">Spun Mídia · Ezor · Internacional</div></div>
+      </div>
+      <div class="stats-bar">
+        <div class="stat"><span class="stat-num">${fl.length}</span><span class="stat-lbl">filtrados</span></div>
+        <div class="stat"><span class="stat-num">${E.length}</span><span class="stat-lbl">total</span></div>
+        <div class="stat"><span class="stat-num">${fl.filter(e=>e.vm===null).length}</span><span class="stat-lbl">a confirmar</span></div>
+        <div class="stat"><span class="stat-num">${med?`R$${med.toLocaleString("pt-BR")}`:"—"}</span><span class="stat-lbl">ticket médio</span></div>
+        ${tbgt?`<div class="stat" style="border-color:#57DF7F44"><span class="stat-num" style="font-size:15px">R$${tbgt.toLocaleString("pt-BR")}</span><span class="stat-lbl">budget total (${S.qtd}×)</span></div>`:""}
+      </div>
+    </div>
+    <div class="filter-bar">
+      <div class="fg"><label>Buscar</label><input style="width:155px" placeholder="nome ou desc..." value="${S.busca}" oninput="set('busca',this.value)"></div>
+      <div class="fg"><label>Escopo</label><select onchange="set('escopo',this.value)">${opts(["Todos","Brasil","Internacional"],S.escopo)}</select></div>
+      <div class="fg"><label>Categoria</label><select onchange="set('cat',this.value)">${opts(CATS,S.cat)}</select></div>
+      <div class="fg"><label>Região</label><select onchange="set('reg',this.value)">${opts(REGS,S.reg)}</select></div>
+      <div class="fg"><label>Marca</label><select onchange="set('marca',this.value)">${opts(["Todas","Spun","Ezor","Internacional"],S.marca)}</select></div>
+      <div class="fg"><label>Mês</label><select onchange="set('mes',this.value)">${opts(["Todos",...MESES],S.mes)}</select></div>
+      <div class="fg"><label>Budget/pessoa</label><input style="width:110px" type="number" placeholder="ex: 2000" value="${S.bpp}" oninput="set('bpp',this.value)"></div>
+      <div class="fg"><label>Nº pessoas</label><input style="width:65px" type="number" min="1" max="9" value="${S.qtd}" oninput="set('qtd',parseInt(this.value)||1)"></div>
+      <div class="view-btns">
+        <button class="vbtn${S.view==="cards"?" active":""}" onclick="set('view','cards')">⬜ Cards</button>
+        <button class="vbtn${S.view==="lista"?" active":""}" onclick="set('view','lista')">≡ Lista</button>
+        <button class="vbtn${S.view==="time"?" active":""}" onclick="set('view','time')">👥 Time</button>
+        <button class="vbtn clear" onclick="clr()">✕ Limpar</button>
+      </div>
+    </div>
+    ${content}
+    ${modal}
+  `;
+}
+render();
+</script>
+</body>
+</html>
